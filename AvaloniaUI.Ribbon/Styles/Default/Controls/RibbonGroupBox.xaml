@@ -10,17 +10,23 @@
             <local:RibbonGroupBox Header="Text or something" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}}">
               <local:RibbonButton MinSize="Medium" MaxSize="Medium" Content="Button">
                 <local:RibbonButton.Icon>
-                  <Rectangle Width="16" Height="16" Fill="Red"/>
+                  <ControlTemplate>
+                    <Rectangle Width="16" Height="16" Fill="Red"/>
+                  </ControlTemplate>
                 </local:RibbonButton.Icon>
               </local:RibbonButton>
               <local:RibbonButton MinSize="Medium" MaxSize="Medium" Content="Button">
                 <local:RibbonButton.Icon>
-                  <Rectangle Width="16" Height="16" Fill="Red"/>
+                  <ControlTemplate>
+                    <Rectangle Width="16" Height="16" Fill="Red"/>
+                  </ControlTemplate>
                 </local:RibbonButton.Icon>
               </local:RibbonButton>
               <local:RibbonButton MinSize="Medium" MaxSize="Medium" Content="Button">
                 <local:RibbonButton.Icon>
-                  <Rectangle Width="16" Height="16" Fill="Red"/>
+                  <ControlTemplate>
+                    <Rectangle Width="16" Height="16" Fill="Red"/>
+                  </ControlTemplate>
                 </local:RibbonButton.Icon>
               </local:RibbonButton>
             </local:RibbonGroupBox>
@@ -63,9 +69,9 @@
                   </Grid>
                 </Border>
               </Button>
-              <ContentPresenter x:Name="PART_HeaderPresenter" TextBlock.FontSize="11" Content="{TemplateBinding Header}" TextBlock.Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center"/>
+              <ContentPresenter x:Name="PART_HeaderPresenter" Content="{TemplateBinding Header}" TextBlock.Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center"/>
             </DockPanel>
-            <ItemsPresenter x:Name="PART_ItemsPresenter" Items="{TemplateBinding Items}" ItemTemplate="{TemplateBinding ItemTemplate}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="{TemplateBinding Padding}">
+            <ItemsPresenter x:Name="PART_ItemsPresenter" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="{TemplateBinding Padding}">
               <ItemsPresenter.ItemsPanel>
                 <ItemsPanelTemplate>
                   <local:RibbonGroupWrapPanel x:Name="PART_ItemsPanel" DisplayMode="{TemplateBinding DisplayMode}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>

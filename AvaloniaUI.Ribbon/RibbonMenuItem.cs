@@ -12,10 +12,12 @@ using Avalonia.Interactivity;
 namespace AvaloniaUI.Ribbon
 {
 
-    public class RibbonMenuItem : HeaderedItemsControl, IStyleable
+    public class RibbonMenuItem : HeaderedItemsControl
     {
-        private ICommand _command;
-
+        static RibbonMenuItem()
+        {
+            ItemsSourceProperty.Changed.AddClassHandler<RibbonMenuItem>((x, e) => x.ItemsChanged(e));
+        }
 
         public static readonly StyledProperty<object> IconProperty = AvaloniaProperty.Register<RibbonMenuItem, object>(nameof(Icon));
 
@@ -49,25 +51,29 @@ namespace AvaloniaUI.Ribbon
             set => SetValue(IsSelectedProperty, value);
         }
 
-        protected override void ItemsChanged(AvaloniaPropertyChangedEventArgs e)
+        private void ItemsChanged(AvaloniaPropertyChangedEventArgs args)
         {
-            base.ItemsChanged(e);
-            HasItems = Items.OfType<object>().Count() > 0;
+            HasItems = Items.Any();
+            if (args.OldValue is INotifyCollectionChanged oldSource)
+                oldSource.CollectionChanged -= ItemsCollectionChanged;
+            if (args.NewValue is INotifyCollectionChanged newSource)
+            {
+                newSource.CollectionChanged += ItemsCollectionChanged;
+            }
         }
 
-        protected override void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            base.ItemsCollectionChanged(sender, e);
-            HasItems = Items.OfType<object>().Count() > 0;
+            HasItems = Items.Any();
         }
 
-        public static readonly DirectProperty<RibbonMenuItem, ICommand> CommandProperty = Button.CommandProperty.AddOwner<RibbonMenuItem>(button => button.Command, (button, command) => button.Command = command);
+        public static readonly StyledProperty<ICommand> CommandProperty = Button.CommandProperty.AddOwner<RibbonMenuItem>();
 
 
         public ICommand Command
         {
-            get => _command;
-            set => SetAndRaise(CommandProperty, ref _command, value);
+            get => GetValue(CommandProperty);
+            set => SetValue(CommandProperty,value);
         }
 
 
@@ -75,8 +81,8 @@ namespace AvaloniaUI.Ribbon
 
         public object CommandParameter
         {
-            get { return GetValue(CommandParameterProperty); }
-            set { SetValue(CommandParameterProperty, value); }
+            get => GetValue(CommandParameterProperty);
+            set => SetValue(CommandParameterProperty, value);
         }
 
         public static readonly RoutedEvent<RoutedEventArgs> ClickEvent = RoutedEvent.Register<Button, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
@@ -91,7 +97,7 @@ namespace AvaloniaUI.Ribbon
         {
             base.OnApplyTemplate(e);
 
-            e.NameScope.Get<Button>("PART_ContentButton").Click += (sneder, args) =>
+            e.NameScope.Get<Button>("PART_ContentButton").Click += (_, _) =>
             {
                 var f = new RoutedEventArgs(ClickEvent);
                 RaiseEvent(f);

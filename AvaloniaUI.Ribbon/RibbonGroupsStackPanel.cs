@@ -18,12 +18,12 @@ namespace AvaloniaUI.Ribbon
         {
             ParentProperty.Changed.AddClassHandler<RibbonGroupsStackPanel>((sender, e) =>
             {
-                Dispatcher.UIThread.Post(() => sender.SizeControls());
+                Dispatcher.UIThread.Post(sender.SizeControls);
             });
 
             BoundsProperty.Changed.AddClassHandler<RibbonGroupsStackPanel>((sender, e) =>
             {
-                if ((e.NewValue != null) && (e.NewValue is Rect newRect))
+                if (e.NewValue is Rect newRect)
                     sender.SizeControls(newRect.Size);
             });
         }

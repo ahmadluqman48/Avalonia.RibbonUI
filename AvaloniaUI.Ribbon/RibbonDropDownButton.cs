@@ -12,9 +12,7 @@ namespace AvaloniaUI.Ribbon
 {
     public class RibbonDropDownButton : ItemsControl, IRibbonControl, ICanAddToQuickAccess
     {
-        private bool _isDropDownOpen;
-
-
+        
         public static readonly AvaloniaProperty<RibbonControlSize> SizeProperty;
         public static readonly AvaloniaProperty<RibbonControlSize> MinSizeProperty;
         public static readonly AvaloniaProperty<RibbonControlSize> MaxSizeProperty;
@@ -59,7 +57,7 @@ namespace AvaloniaUI.Ribbon
 
 
         public static readonly StyledProperty<object> ContentProperty = ContentControl.ContentProperty.AddOwner<RibbonDropDownButton>();
-        public static readonly DirectProperty<RibbonDropDownButton, bool> IsDropDownOpenProperty = ComboBox.IsDropDownOpenProperty.AddOwner<RibbonDropDownButton>(o => o.IsDropDownOpen, (o, v) => o.IsDropDownOpen = v);
+        public static readonly StyledProperty<bool> IsDropDownOpenProperty = ComboBox.IsDropDownOpenProperty.AddOwner<RibbonDropDownButton>();
 
 
         public RibbonControlSize Size
@@ -88,8 +86,8 @@ namespace AvaloniaUI.Ribbon
 
         public bool IsDropDownOpen
         {
-            get => _isDropDownOpen;
-            set => SetAndRaise(IsDropDownOpenProperty, ref _isDropDownOpen, value);
+            get => GetValue(IsDropDownOpenProperty);
+            set => SetValue(IsDropDownOpenProperty, value);
         }
 
         static RibbonDropDownButton()
@@ -97,20 +95,21 @@ namespace AvaloniaUI.Ribbon
             RibbonControlHelper<RibbonDropDownButton>.SetProperties(out SizeProperty, out MinSizeProperty, out MaxSizeProperty);
         }
 
-        protected override IItemContainerGenerator CreateItemContainerGenerator()
+        //TODO: 
+        /*protected override IItemContainerGenerator CreateItemContainerGenerator()
         {
             return new ItemContainerGenerator<RibbonDropDownItemPresenter>(this, RibbonDropDownItemPresenter.ContentProperty, RibbonDropDownItemPresenter.ContentTemplateProperty);
-        }
+        }*/
     }
 
     //public class RibbonDropDownItem : GalleryItem { }
-    public class RibbonDropDownButtonItemsPresenter : ItemsPresenter, IStyleable
+    public class RibbonDropDownButtonItemsPresenter : ItemsPresenter
     {
-        protected override IItemContainerGenerator CreateItemContainerGenerator()
+        /*protected override IItemContainerGenerator CreateItemContainerGenerator()
         {
             return new ItemContainerGenerator<RibbonDropDownItemPresenter>(this, RibbonDropDownItemPresenter.ContentProperty, RibbonDropDownItemPresenter.ContentTemplateProperty);
-        }
+        }*/
 
-        Type IStyleable.StyleKey => typeof(ItemsPresenter);
+        protected override Type StyleKeyOverride => typeof(ItemsPresenter);
     }
 }

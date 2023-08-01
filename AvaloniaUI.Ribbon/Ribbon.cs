@@ -16,15 +16,17 @@ using System.Diagnostics;
 using Avalonia.Controls.Presenters;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
+using System.Reactive.Disposables;
 using Avalonia.Controls.Generators;
+using Avalonia.Controls.Templates;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AvaloniaUI.Ribbon
 {
-    public class Ribbon : TabControl, IStyleable, IMainMenu, IKeyTipHandler
+    public class Ribbon :/*Menu,*/ TabControl, IKeyTipHandler 
     {
-        public static readonly StyledProperty<Orientation> OrientationProperty = StackLayout.OrientationProperty.AddOwner<Ribbon>();
+        public static readonly StyledProperty<Orientation> OrientationProperty = StackPanel.OrientationProperty.AddOwner<Ribbon>();
         public Orientation Orientation
         {
             get => GetValue(OrientationProperty);
@@ -38,13 +40,35 @@ namespace AvaloniaUI.Ribbon
         public static readonly StyledProperty<IRibbonMenu> MenuProperty = AvaloniaProperty.Register<Ribbon, IRibbonMenu>(nameof(Menu));
         public static readonly StyledProperty<bool> IsMenuOpenProperty = AvaloniaProperty.Register<Ribbon, bool>(nameof(IsMenuOpen));
         public static readonly DirectProperty<Ribbon, ObservableCollection<RibbonGroupBox>> SelectedGroupsProperty = AvaloniaProperty.RegisterDirect<Ribbon, ObservableCollection<RibbonGroupBox>>(nameof(SelectedGroups), o => o.SelectedGroups, (o, v) => o.SelectedGroups = v);
-
+        
+        /*
+        /// <summary>
+        /// Defines the <see cref="Ribbon" /> property.
+        /// </summary>
+        public static readonly StyledProperty<IDataTemplate> ContentTemplateProperty = ContentControl.ContentTemplateProperty.AddOwner<Ribbon>();
+        /// <summary>The selected content property</summary>
+        public static readonly DirectProperty<Ribbon, object> SelectedContentProperty = AvaloniaProperty.RegisterDirect<Ribbon, object>(nameof (SelectedContent), (Func<Ribbon, object>) (o => o.SelectedContent));
+        /// <summary>The selected content template property</summary>
+        public static readonly DirectProperty<Ribbon, IDataTemplate> SelectedContentTemplateProperty = AvaloniaProperty.RegisterDirect<Ribbon, IDataTemplate>(nameof (SelectedContentTemplate), (Func<Ribbon, IDataTemplate>) (o => o.SelectedContentTemplate));
+        */
+        
         public static readonly DirectProperty<Ribbon, ObservableCollection<Control>> TabsProperty = AvaloniaProperty.RegisterDirect<Ribbon, ObservableCollection<Control>>(nameof(Tabs), o => o.Tabs, (o, v) => o.Tabs = v);
         
         public static readonly DirectProperty<Ribbon, ICommand> HelpButtonCommandProperty = AvaloniaProperty.RegisterDirect<Ribbon, ICommand>(nameof(HelpButtonCommand), o => o.HelpButtonCommand, (o, v) => o.HelpButtonCommand = v);
         ICommand _helpCommand;
 
+        public static readonly DirectProperty<MenuBase, bool> IsOpenProperty = AvaloniaProperty.RegisterDirect<MenuBase, bool>(nameof (IsOpen), (Func<MenuBase, bool>) (o => o.IsOpen));
 
+        private bool _isOpen;
+        /*
+        /// <summary>
+        /// Defines the <see cref="P:Avalonia.Controls.TabControl.HorizontalContentAlignment" /> property.
+        /// </summary>
+        public static readonly StyledProperty<HorizontalAlignment> HorizontalContentAlignmentProperty = ContentControl.HorizontalContentAlignmentProperty.AddOwner<Ribbon>();
+        /// <summary>
+        /// Defines the <see cref="P:Avalonia.Controls.TabControl.VerticalContentAlignment" /> property.
+        /// </summary>
+        public static readonly StyledProperty<VerticalAlignment> VerticalContentAlignmentProperty = ContentControl.VerticalContentAlignmentProperty.AddOwner<Ribbon>();*/
         public static readonly StyledProperty<QuickAccessToolbar> QuickAccessToolbarProperty = AvaloniaProperty.Register<Ribbon, QuickAccessToolbar>(nameof(QuickAccessToolbar));
         public QuickAccessToolbar QuickAccessToolbar
         {
@@ -58,14 +82,14 @@ namespace AvaloniaUI.Ribbon
 
             SelectedIndexProperty.Changed.AddClassHandler<Ribbon>((x, e) => x.RefreshSelectedGroups());
 
-            IsCollapsedProperty.Changed.AddClassHandler(new Action<Ribbon, AvaloniaPropertyChangedEventArgs>((sneder, args) => sneder.UpdatePresenterLocation((bool)args.NewValue)));
-            //IsCollapsedPopupOpenProperty.Changed.AddClassHandler(new Action<Ribbon, AvaloniaPropertyChangedEventArgs>((sneder, args) => sneder.UpdatePresenterLocation(sneder.IsCollapsed)));
+            IsCollapsedProperty.Changed.AddClassHandler<Ribbon,bool>(((sender, args) => sender.UpdatePresenterLocation(args.NewValue.Value)));
 
-            AccessKeyHandler.AccessKeyPressedEvent.AddClassHandler<Ribbon>((sender, e) =>
+            
+            /*AccessKeyHandler.AccessKeyPressedEvent.AddClassHandler<Ribbon>((sender, e) =>
             {
                 if (e.Source is Control ctrl)
                     (sender as Ribbon).HandleKeyTipControl(ctrl);
-            });
+            });*/
 
             KeyTip.ShowChildKeyTipKeysProperty.Changed.AddClassHandler<Ribbon>(new Action<Ribbon, AvaloniaPropertyChangedEventArgs>((sender, args) =>
             {
@@ -78,6 +102,15 @@ namespace AvaloniaUI.Ribbon
             //BoundsProperty.Changed.AddClassHandler<RibbonGroupsStackPanel>((sender, e) => sender.InvalidateMeasure());
 
             TabsProperty.Changed.AddClassHandler<Ribbon>((sender, e) => sender.RefreshTabs());
+        }
+
+        public Ribbon()
+        {
+            #warning HACK
+            var binder = ItemsSourceProperty.Bind();
+            binder.Source = this;
+            binder.Property = TabsProperty;
+            binder.Subscribe();
         }
 
         RibbonTab _prevSelectedTab = null;
@@ -95,9 +128,9 @@ namespace AvaloniaUI.Ribbon
                 foreach (RibbonGroupBox box in tab.Groups)
                     SelectedGroups.Add(box);
                 
-                var last = SelectedGroups.Last();
+                /*var last = SelectedGroups.Last();
                 SelectedGroups.Remove(last);
-                SelectedGroups.Add(last);
+                SelectedGroups.Add(last);*/
                 
                 if (tab.IsContextual)
                 {
@@ -109,17 +142,38 @@ namespace AvaloniaUI.Ribbon
 
         void RefreshTabs()
         {
-            ((AvaloniaList<object>)Items).Clear();
-            foreach (Control ctrl in Tabs)
+            if (ItemsSource is IList list)
             {
-                if (ctrl is RibbonContextualTabGroup ctx)
+                list.Clear();
+                foreach (Control ctrl in Tabs)
                 {
-                    foreach (RibbonTab tb in ctx.Items)
-                        ((AvaloniaList<object>)Items).Add(tb);
+                    if (ctrl is RibbonContextualTabGroup ctx)
+                    {
+                        foreach (RibbonTab tb in ctx.Items)
+                            list.Add(tb);
+                    }
+                    else if (ctrl is RibbonTab tab)
+                        list.Add(tab);
                 }
-                else if (ctrl is RibbonTab tab)
-                    ((AvaloniaList<object>)Items).Add(tab);
             }
+            else
+            {
+                var newTabsList = new List<Control>();
+                foreach (Control ctrl in Tabs)
+                {
+                    if (ctrl is RibbonContextualTabGroup ctx)
+                    {
+                        foreach (RibbonTab tb in ctx.Items)
+                            newTabsList.Add(tb);
+                    }
+                    else if (ctrl is RibbonTab tab)
+                        newTabsList.Add(tab);
+                }
+
+                ItemsSource = newTabsList;
+            }
+            
+           
         }
 
         ICanAddToQuickAccess _rightClicked = null;
@@ -145,8 +199,7 @@ namespace AvaloniaUI.Ribbon
             base.OnLostFocus(e);
             KeyTip.SetShowChildKeyTipKeys(this, false);
         }
-
-        protected IMenuInteractionHandler InteractionHandler { get; }
+        
 
         public static readonly RoutedEvent<RoutedEventArgs> MenuClosedEvent = RoutedEvent.Register<Ribbon, RoutedEventArgs>(nameof(MenuClosed), RoutingStrategies.Bubble);
         public event EventHandler<RoutedEventArgs> MenuClosed
@@ -161,8 +214,60 @@ namespace AvaloniaUI.Ribbon
             get => _selectedGroups;
             set => SetAndRaise(SelectedGroupsProperty, ref _selectedGroups, value);
         }
-
         
+        /*private object _selectedContent;
+        private IDataTemplate _selectedContentTemplate;
+        
+        /// <summary>
+        /// Gets or sets the default data template used to display the content of the selected tab.
+        /// </summary>
+        public IDataTemplate ContentTemplate
+        {
+            get => this.GetValue<IDataTemplate>(ContentTemplateProperty);
+            set => this.SetValue<IDataTemplate>(ContentTemplateProperty, value);
+        }
+        /// <summary>Gets or sets the content of the selected tab.</summary>
+        /// <value>The content of the selected tab.</value>
+        public object SelectedContent
+        {
+            get => this._selectedContent;
+            internal set => this.SetAndRaise<object>((DirectPropertyBase<object>) SelectedContentProperty, ref this._selectedContent, value);
+        }
+        
+        /// <summary>
+        /// Gets or sets the horizontal alignment of the content within the control.
+        /// </summary>
+        public HorizontalAlignment HorizontalContentAlignment
+        {
+            get => this.GetValue<HorizontalAlignment>(TabControl.HorizontalContentAlignmentProperty);
+            set => this.SetValue<HorizontalAlignment>(TabControl.HorizontalContentAlignmentProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the vertical alignment of the content within the control.
+        /// </summary>
+        public VerticalAlignment VerticalContentAlignment
+        {
+            get => this.GetValue<VerticalAlignment>(TabControl.VerticalContentAlignmentProperty);
+            set => this.SetValue<VerticalAlignment>(TabControl.VerticalContentAlignmentProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the content template for the selected tab.
+        /// </summary>
+        /// <value>The content template of the selected tab.</value>
+        public IDataTemplate SelectedContentTemplate
+        {
+            get => this._selectedContentTemplate;
+            internal set => this.SetAndRaise<IDataTemplate>((DirectPropertyBase<IDataTemplate>) SelectedContentTemplateProperty, ref this._selectedContentTemplate, value);
+        }*/
+
+        public bool IsOpen
+        {
+            get => this._isOpen;
+            protected set => this.SetAndRaise<bool>((DirectPropertyBase<bool>) MenuBase.IsOpenProperty, ref this._isOpen, value);
+        }
+
         private ObservableCollection<Control> _tabs = new ObservableCollection<Control>();
         public ObservableCollection<Control> Tabs
         {
@@ -170,8 +275,7 @@ namespace AvaloniaUI.Ribbon
             set => SetAndRaise(TabsProperty, ref _tabs, value);
         }
 
-
-        Type IStyleable.StyleKey => typeof(Ribbon);
+        protected override Type StyleKeyOverride => typeof(Ribbon);
 
         public bool IsCollapsed
         {
@@ -208,15 +312,7 @@ namespace AvaloniaUI.Ribbon
             get { return GetValue(HeaderForegroundProperty); }
             set { SetValue(HeaderForegroundProperty, value); }
         }
-
-        public static readonly DirectProperty<Ribbon, bool> IsOpenProperty = MenuBase.IsOpenProperty.AddOwner<Ribbon>(o => o.IsOpen); //, (o, v) => o.IsOpen = v
         
-        private bool _isOpen;
-        public bool IsOpen
-        {
-            get { return _isOpen; }
-            protected set { SetAndRaise(IsOpenProperty, ref _isOpen, value); }
-        }
 
         protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
         {
@@ -314,22 +410,19 @@ namespace AvaloniaUI.Ribbon
 
         public void GoToPreviousTab()
         {
-            var tabs = ((AvaloniaList<object>)Items).OfType<RibbonTab>().Where(x => x.IsEffectivelyVisible && x.IsEnabled);   
+            throw new NotImplementedException();
+            //var tabs = ((AvaloniaList<object>)Items).OfType<RibbonTab>().Where(x => x.IsEffectivelyVisible && x.IsEnabled);   
         }
 
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
         {
             base.OnAttachedToVisualTree(e);
-
-            var inputRoot = e.Root as IInputRoot;
-
-            if (inputRoot?.AccessKeyHandler != null)
-                inputRoot.AccessKeyHandler.MainMenu = this;
-
-            if ((inputRoot != null) && (inputRoot is WindowBase wnd))
-                wnd.Deactivated += InputRoot_Deactivated;
             
-            inputRoot.AddHandler<PointerPressedEventArgs>(PointerPressedEvent, InputRoot_PointerPressed, handledEventsToo: true);
+
+            if (e.Root is WindowBase wnd)
+                wnd.Deactivated += InputRoot_Deactivated;
+            if (e.Root is IInputRoot inputRoot)
+                inputRoot.AddHandler(PointerPressedEvent, InputRoot_PointerPressed, handledEventsToo: true);
             
             RefreshTabs();
             RefreshSelectedGroups();
@@ -344,12 +437,11 @@ namespace AvaloniaUI.Ribbon
         protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
         {
             base.OnDetachedFromVisualTree(e);
-
-            var inputRoot = e.Root as IInputRoot;
-            if ((inputRoot != null) && (inputRoot is WindowBase wnd))
-                wnd.Deactivated -= InputRoot_Deactivated;
             
-            inputRoot.RemoveHandler<PointerPressedEventArgs>(PointerPressedEvent, InputRoot_PointerPressed);
+            if (e.Root is WindowBase wnd)
+                wnd.Deactivated -= InputRoot_Deactivated;
+            if (e.Root is IInputRoot inputRoot)
+                inputRoot.RemoveHandler(PointerPressedEvent, InputRoot_PointerPressed);
         }
 
         private void InputRoot_Deactivated(object sender, EventArgs e)
@@ -364,7 +456,7 @@ namespace AvaloniaUI.Ribbon
 
             KeyTip.SetShowChildKeyTipKeys(this, false);
             IsOpen = false;
-            FocusManager.Instance.Focus(_prevFocusedElement);
+            _prevFocusedElement.Focus();
 
             RaiseEvent(new RoutedEventArgs
             {
@@ -374,13 +466,14 @@ namespace AvaloniaUI.Ribbon
         }
 
         IInputElement _prevFocusedElement = null;
-        public void Open()
+        public /*override*/ void Open()
         {
             if (IsOpen)
                 return;
 
             IsOpen = true;
-            _prevFocusedElement = FocusManager.Instance.Current;
+            if (VisualRoot is TopLevel topLevel)
+                _prevFocusedElement = topLevel.FocusManager?.GetFocusedElement();
             Focus();
             KeyTip.SetShowChildKeyTipKeys(this, true);
 
@@ -460,6 +553,7 @@ namespace AvaloniaUI.Ribbon
         ContentControl _flyoutPresenter;
         ItemsPresenter _itemHeadersPresenter;
         ContextMenu _ctxMenu;
+        private CompositeDisposable _selectedItemSubscriptions;
 
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
@@ -476,43 +570,45 @@ namespace AvaloniaUI.Ribbon
 
 
             bool secondClick = false;
-            
-            _itemHeadersPresenter.PointerReleased += (sneder, args) =>
-            {   
-                if (IsCollapsed)
+            if(_itemHeadersPresenter is {})
+            {
+                _itemHeadersPresenter.PointerReleased += (_, _) =>
                 {
-                    RibbonTab mouseOverItem = null;
-                    foreach (RibbonTab tab in Items)
+                    if (IsCollapsed)
                     {
-                        if (tab.IsPointerOver)
+                        RibbonTab mouseOverItem = null;
+                        foreach (RibbonTab tab in Items)
                         {
-                            mouseOverItem = tab;
-                            break;
+                            if (tab.IsPointerOver)
+                            {
+                                mouseOverItem = tab;
+                                break;
+                            }
+                        }
+
+                        if (mouseOverItem != null)
+                        {
+                            if (SelectedItem != mouseOverItem)
+                                SelectedItem = mouseOverItem;
+                            if (!secondClick)
+                                IsCollapsedPopupOpen = true;
+                            else
+                                secondClick = false;
                         }
                     }
-                    
-                    if (mouseOverItem != null)
+                    else
                     {
-                        if (SelectedItem != mouseOverItem)
-                            SelectedItem = mouseOverItem;
-                        if (!secondClick)
-                            IsCollapsedPopupOpen = true;
-                        else
-                            secondClick = false;
-                    }
-                }
-                else
-                {
-                    foreach (RibbonTab tab in Items)
-                    {
-                        if (tab.IsPointerOver && tab.IsContextual)
+                        foreach (RibbonTab tab in Items)
                         {
-                            SelectedItem = tab;
-                            break;
+                            if (tab.IsPointerOver && tab.IsContextual)
+                            {
+                                SelectedItem = tab;
+                                break;
+                            }
                         }
                     }
-                }
-            };
+                };
+            }
             /*_itemHeadersPresenter.DoubleTapped += (sneder, args) =>
             {
                 if (IsCollapsed)
@@ -529,48 +625,68 @@ namespace AvaloniaUI.Ribbon
             };*/
             
             var pinToQat = e.NameScope.Find<MenuItem>("PART_PinLastHoveredControlToQuickAccess");
-            pinToQat.Click += (sneder, args) =>
+            if (pinToQat is {})
             {
-                if (_rightClicked != null)
-                    QuickAccessToolbar?.AddItem(_rightClicked);
-            };
+                pinToQat.Click += (_, _) =>
+                {
+                    if (_rightClicked != null)
+                        QuickAccessToolbar?.AddItem(_rightClicked);
+                };
+            }
             
             _ctxMenu = e.NameScope.Find<ContextMenu>("PART_ContentAreaContextMenu");
             
-            e.NameScope.Find<MenuItem>("PART_CollapseRibbon").Click += (sneder, args) =>
+            var collapseRibbon = e.NameScope.Find<MenuItem>("PART_CollapseRibbon");
+            if (collapseRibbon is {})
             {
-                if (IsCollapsed)
-                    IsCollapsedPopupOpen = false;
-                
-                IsCollapsed = !IsCollapsed;
-            };
-            
-            _groupsHost.PointerLeave += (sneder, args) => 
-            {
-                if (!_ctxMenu.IsOpen)
-                    _rightClicked = null;
-            };
-
-            _groupsHost.AddHandler<PointerReleasedEventArgs>(PointerReleasedEvent, 
-            (sneder, args) =>
-            {
-                if (args.Source != null)
+                collapseRibbon.Click += (_, _) =>
                 {
-                    var ctrl = Avalonia.VisualTree.VisualExtensions.FindAncestorOfType<ICanAddToQuickAccess>(args.Source as IVisual);
-                    
-                    _rightClicked = ctrl;
+                    if (IsCollapsed)
+                        IsCollapsedPopupOpen = false;
 
-                    if (QuickAccessToolbar != null)
-                        pinToQat.IsEnabled = (_rightClicked != null) && _rightClicked.CanAddToQuickAccess && (!QuickAccessToolbar.ContainsItem(_rightClicked));
-                    else
-                        pinToQat.IsEnabled = false;
-                }
-            }, handledEventsToo: true);
+                    IsCollapsed = !IsCollapsed;
+                };
+            }
+            if (_groupsHost is {})
+            {
+                _groupsHost.PointerExited += (_, _) =>
+                {
+                    if (!_ctxMenu.IsOpen)
+                        _rightClicked = null;
+                };
+                _groupsHost.AddHandler<PointerReleasedEventArgs>(PointerReleasedEvent, 
+                    (_, args) =>
+                    {
+                        if (args.Source is Visual visual && pinToQat is {})
+                        {
+                            var ctrl = visual.FindAncestorOfType<ICanAddToQuickAccess>();
+                    
+                            _rightClicked = ctrl;
+
+                            if (QuickAccessToolbar != null)
+                                pinToQat.IsEnabled = (_rightClicked != null) && _rightClicked.CanAddToQuickAccess && (!QuickAccessToolbar.ContainsItem(_rightClicked));
+                            else
+                                pinToQat.IsEnabled = false;
+                        }
+                    }, handledEventsToo: true);
+            }
+
+            if (_popup is { })
+            {
+                _popup.LostFocus += (_, _) =>
+                {
+                    if (IsOpen)
+                    {
+                        Close();
+                    }
+                };
+            }
+           
         }
 
         private void UpdatePresenterLocation(bool intoFlyout)
         {
-            if (_groupsHost.Parent is IContentPresenter presenter)
+            if (_groupsHost.Parent is ContentPresenter presenter)
                 presenter.Content = null;
             else if (_groupsHost.Parent is ContentControl control)
                 control.Content = null;
@@ -583,9 +699,5 @@ namespace AvaloniaUI.Ribbon
                 _mainPresenter.Content = _groupsHost;
         }
         
-        protected override IItemContainerGenerator CreateItemContainerGenerator()
-        {
-            return new ItemContainerGenerator(this);
-        }
     }
 }

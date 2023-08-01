@@ -57,7 +57,7 @@ namespace AvaloniaUI.Ribbon
                 var tip = new Popup()
                 {
                     PlacementTarget = element,
-                    PlacementMode = PlacementMode.Right,
+                    Placement = PlacementMode.Right,
                     [!Popup.WidthProperty] = tipContent.GetObservable(Control.BoundsProperty).Select(x => x.Width).ToBinding(),
                     [!Popup.HeightProperty] = tipContent.GetObservable(Control.BoundsProperty).Select(x => x.Height).ToBinding(), //tipContent[!Control.HeightProperty],
                     VerticalAlignment = VerticalAlignment.Bottom,
@@ -88,7 +88,7 @@ namespace AvaloniaUI.Ribbon
         private static void KeyTip_Opened(object sender, EventArgs e)
         {
             var sned = sender as Popup;
-            sned.Host?.ConfigurePosition(sned.PlacementTarget, sned.PlacementMode, new Point(sned.HorizontalOffset, sned.VerticalOffset));
+            sned.Host?.ConfigurePosition(sned.PlacementTarget, sned.Placement, new Point(sned.HorizontalOffset, sned.VerticalOffset));
         }
     }
 }

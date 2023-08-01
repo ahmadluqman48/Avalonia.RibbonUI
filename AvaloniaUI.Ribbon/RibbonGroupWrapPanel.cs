@@ -44,8 +44,8 @@ namespace AvaloniaUI.Ribbon
         {
             if (TemplatedParent is RibbonGroupBox parentBox)
             {
-                parentBox.Rearranged += (sneder, args) => ArrangeOverride(Bounds.Size);
-                parentBox.Remeasured += (sneder, args) => MeasureOverride(Bounds.Size);
+                parentBox.Rearranged += (_, _) => ArrangeOverride(Bounds.Size);
+                parentBox.Remeasured += (_, _) => MeasureOverride(Bounds.Size);
             }
         }
     }

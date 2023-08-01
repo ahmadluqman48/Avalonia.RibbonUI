@@ -8,17 +8,23 @@
         <StackPanel Orientation="Horizontal" Spacing="10">
           <local:RibbonButton Content="Large Ribbon Button">
             <local:RibbonButton.LargeIcon>
-              <Image Source="/Assets/settings.png" Width="32" Height="32"/>
+              <ControlTemplate>
+                <Image Source="/Assets/settings.png" Width="32" Height="32"/>
+              </ControlTemplate>
             </local:RibbonButton.LargeIcon>
           </local:RibbonButton>
           <local:RibbonButton Size="Medium" Content="Medium Ribbon Button">
             <local:RibbonButton.Icon>
-              <Image Source="/Assets/settings.png" Width="16" Height="16"/>
+              <ControlTemplate>
+                <Image Source="/Assets/settings.png" Width="16" Height="16"/>
+              </ControlTemplate>
             </local:RibbonButton.Icon>
           </local:RibbonButton>
           <local:RibbonButton Size="Small" Content="Small Ribbon Button">
             <local:RibbonButton.Icon>
-              <Image Source="/Assets/settings.png" Width="16" Height="16"/>
+              <ControlTemplate>
+                <Image Source="/Assets/settings.png" Width="16" Height="16"/>
+              </ControlTemplate>
             </local:RibbonButton.Icon>
           </local:RibbonButton>
         </StackPanel>
