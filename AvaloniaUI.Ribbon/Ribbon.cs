@@ -303,14 +303,14 @@ namespace AvaloniaUI.Ribbon
 
         public IBrush HeaderBackground
         {
-            get { return GetValue(HeaderBackgroundProperty); }
-            set { SetValue(HeaderBackgroundProperty, value); }
+            get => GetValue(HeaderBackgroundProperty);
+            set => SetValue(HeaderBackgroundProperty, value);
         }
 
         public IBrush HeaderForeground
         {
-            get { return GetValue(HeaderForegroundProperty); }
-            set { SetValue(HeaderForegroundProperty, value); }
+            get => GetValue(HeaderForegroundProperty);
+            set => SetValue(HeaderForegroundProperty, value);
         }
         
 
@@ -671,7 +671,7 @@ namespace AvaloniaUI.Ribbon
                     }, handledEventsToo: true);
             }
 
-            if (_popup is { })
+            /*if (_popup is { })
             {
                 _popup.LostFocus += (_, _) =>
                 {
@@ -680,7 +680,7 @@ namespace AvaloniaUI.Ribbon
                         Close();
                     }
                 };
-            }
+            }*/
            
         }
 

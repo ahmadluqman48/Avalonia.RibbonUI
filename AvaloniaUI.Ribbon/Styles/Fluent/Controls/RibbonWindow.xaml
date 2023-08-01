@@ -23,7 +23,68 @@
     <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
     <Setter Property="Template">
       <ControlTemplate>
-        <Grid>
+        <Panel>
+          <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
+          <Border Background="{TemplateBinding Background}" IsHitTestVisible="False" />
+          <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
+          <VisualLayerManager>
+            <VisualLayerManager.ChromeOverlayLayer>
+              
+            </VisualLayerManager.ChromeOverlayLayer>
+            <DockPanel>
+              <TitleBar x:Name="PART_TitleBar" DockPanel.Dock="Top" />
+              <!--<Border DockPanel.Dock="Top" Height="31"/> ~1~TODO: Its a hack. Binding to titleBar.Height do not work well on Maximized screen@1@-->
+              <Grid RowDefinitions="Auto, Auto, Auto">
+                <ContentPresenter Grid.Row="0" 
+                                  x:Name="PART_RibbonPresenter" 
+                                  Content="{TemplateBinding Ribbon}"
+                                  VerticalAlignment="Top"/>
+             
+                <ContentPresenter Grid.Row="1" 
+                                  x:Name="PART_QuickAccessToolbarPresenter" 
+                                  Content="{TemplateBinding QuickAccessToolbar}" 
+                                  Height="33" 
+                                  HorizontalAlignment="Left" 
+                                  VerticalAlignment="Top"/>
+                <ContentPresenter Grid.Row="2" Name="PART_ContentPresenter"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Content="{TemplateBinding Content}"
+                                  Margin="{TemplateBinding Padding}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+              </Grid>
+             
+            </DockPanel>
+          </VisualLayerManager>
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="TitleBar">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel HorizontalAlignment="{TemplateBinding HorizontalAlignment}" 
+               VerticalAlignment="Stretch">
+          <Panel x:Name="PART_MouseTracker" 
+                 Height="1" 
+                 VerticalAlignment="Top" />
+          <Panel x:Name="PART_Container">
+            <Panel x:Name="PART_PictureBar" Background="#01000000" VerticalAlignment="Center">
+              <Image Classes="IconImage" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" Source="{Binding Icon, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WindowIconToImageConverter}}" MaxWidth="16" MaxHeight="16" Margin="9,0" IsHitTestVisible="False"/>
+            </Panel>
+            <Border x:Name="PART_Background"
+                    Background="{TemplateBinding Background}"
+                    IsHitTestVisible="False"/>
+            <CaptionButtons x:Name="PART_CaptionButtons"
+                            VerticalAlignment="Top" 
+                            HorizontalAlignment="Right"
+                            Foreground="{TemplateBinding Foreground}" />
+          </Panel>
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <!--<Grid>
           <Border Classes="OuterBorder">
             <Grid x:Name="WindowGrid">
               <Grid.RowDefinitions>
@@ -35,35 +96,44 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
               </Grid.ColumnDefinitions>
-              <Border x:Name="TitlebarFill" Background="{TemplateBinding TitleBarBackground}" IsHitTestVisible="False" Grid.Row="0" Grid.ColumnSpan="2" />
+              <VisualLayerManager>
+                <VisualLayerManager.ChromeOverlayLayer>
+                  <Grid>
+                    <Border x:Name="TitlebarFill" Background="{TemplateBinding TitleBarBackground}" IsHitTestVisible="False" Grid.Row="0" Grid.ColumnSpan="2" />
+                    <Grid x:Name="CaptionButtons" ColumnDefinitions="*,*,*" Grid.Row="0" Grid.ColumnSpan="2" Width="135" Height="{Binding #PART_TitleBar.Height}" IsVisible="{Binding #PART_TitleBar.IsVisible}" VerticalAlignment="Top">
+                      <Button Name="PART_MinimizeButton">
+                        <Rectangle Width="10" Height="1"/>
+                      </Button>
+                      <Button Name="PART_MaximizeButton">
+                        <Grid>
+                          <Rectangle Width="10" Height="10"/>
+                          <Grid Width="10" Height="10">
+                            <Border BorderThickness="1" Width="7" Height="7" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                            <Grid Width="7" Height="7" HorizontalAlignment="Right" VerticalAlignment="Top">
+                              <Border BorderThickness="0,1,1,0"/>
+                              <Rectangle HorizontalAlignment="Left" VerticalAlignment="Top" Width="2" Height="3"/>
+                              <Rectangle HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="3" Height="2"/>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                      </Button>
+                      <Button x:Name="PART_CloseButton">
+                        <Path Data="M 0 0 L 10 10 M 10 0 L 0 10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                      </Button>
+                    </Grid>
+                    <Panel x:Name="PART_TitleBar" Grid.Row="0" Grid.ColumnSpan="2" Background="#01000000" VerticalAlignment="Top">
+                      <Image Classes="IconImage" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" Source="{Binding Icon, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource WindowIconToImageConverter}}" MaxWidth="16" MaxHeight="16" Margin="9,0" IsHitTestVisible="False"/>
+                    </Panel>
+                  </Grid>
+                </VisualLayerManager.ChromeOverlayLayer>
+              </VisualLayerManager>
+              
               <ContentPresenter x:Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" Background="{TemplateBinding Background}" CornerRadius="0,0,3,3"/>
               <ContentPresenter x:Name="PART_RibbonPresenter" Content="{TemplateBinding Ribbon}"/>
-              <Panel x:Name="PART_TitleBar" Grid.Row="0" Grid.ColumnSpan="2" Background="#01000000" VerticalAlignment="Top">
-                <Image Classes="IconImage" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" Source="{Binding Icon, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource WindowIconToImageConverter}}" MaxWidth="16" MaxHeight="16" Margin="9,0" IsHitTestVisible="False"/>
-              </Panel>
+             
               <ContentPresenter x:Name="PART_QuickAccessToolbarPresenter" Content="{TemplateBinding QuickAccessToolbar}" Grid.Row="0" Grid.ColumnSpan="2" Height="33" HorizontalAlignment="Left" VerticalAlignment="Top"/>
               
-              <Grid x:Name="CaptionButtons" ColumnDefinitions="*,*,*" Grid.Row="0" Grid.ColumnSpan="2" Width="135" Height="{Binding #PART_TitleBar.Height}" IsVisible="{Binding #PART_TitleBar.IsVisible}" VerticalAlignment="Top">
-                  <Button Name="PART_MinimizeButton">
-                    <Rectangle Width="10" Height="1"/>
-                  </Button>
-                  <Button Name="PART_MaximizeButton">
-                    <Grid>
-                      <Rectangle Width="10" Height="10"/>
-                      <Grid Width="10" Height="10">
-                        <Border BorderThickness="1" Width="7" Height="7" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-                        <Grid Width="7" Height="7" HorizontalAlignment="Right" VerticalAlignment="Top">
-                          <Border BorderThickness="0,1,1,0"/>
-                          <Rectangle HorizontalAlignment="Left" VerticalAlignment="Top" Width="2" Height="3"/>
-                          <Rectangle HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="3" Height="2"/>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Button>
-                  <Button x:Name="PART_CloseButton">
-                    <Path Data="M 0 0 L 10 10 M 10 0 L 0 10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                  </Button>
-                </Grid>
+              
             </Grid>
           </Border>
           <Grid Name="ResizeGrid" ColumnDefinitions="8,*,8" RowDefinitions="8,*,8">
@@ -107,10 +177,8 @@
                 Name="Left_bottom"
                 Grid.Row="1"/>
           </Grid>
-        </Grid>
-      </ControlTemplate>
-    </Setter>
-  </Style>
+        </Grid>-->
+  
   <Style Selector="local|RibbonWindow[SystemDecorations=Full] /template/ Image#IconImage">
     <Setter Property="IsVisible" Value="False"/>
   </Style>

@@ -17,6 +17,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Icon = System.Drawing.Icon;
 using System.Timers;
+using Avalonia.Controls.Chrome;
+using Avalonia.Platform;
 
 namespace AvaloniaUI.Ribbon
 {
@@ -83,12 +85,47 @@ namespace AvaloniaUI.Ribbon
 
             RibbonProperty.Changed.AddClassHandler<RibbonWindow>((sender, e) => sender.RefreshRibbon(e.OldValue, e.NewValue));
             QuickAccessToolbarProperty.Changed.AddClassHandler<RibbonWindow>((sender, e) => sender.RefreshQat(e.OldValue, e.NewValue));
+            SystemDecorationsProperty.Changed.AddClassHandler<RibbonWindow>((sender, arg) =>
+            {
+                if (arg.NewValue is SystemDecorations systemDecorations)
+                    switch (systemDecorations)
+                    {
+                        case SystemDecorations.Full:
+                            sender.ExtendClientAreaToDecorationsHint = false;
+                            break;
+                        case SystemDecorations.None:
+                            sender.ExtendClientAreaToDecorationsHint = true;
+                            break;
+                    }
+                
+            });
         }
 
         public RibbonWindow() : base()
         {
+            ExtendClientAreaTitleBarHeightHint = 40;
+            ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
+            TransparencyLevelHint = new List<WindowTransparencyLevel>(){WindowTransparencyLevel.AcrylicBlur};            
+
+            this.GetObservable(WindowStateProperty)
+                .Subscribe(x =>
+                {
+                    PseudoClasses.Set(":maximized", x == WindowState.Maximized);
+                    PseudoClasses.Set(":fullscreen", x == WindowState.FullScreen);
+                });
+
+            this.GetObservable(IsExtendedIntoWindowDecorationsProperty)
+                .Subscribe(x =>
+                {
+                    if (!x)
+                    {
+                        SystemDecorations = SystemDecorations.Full;
+                        TransparencyLevelHint =new List<WindowTransparencyLevel>(){WindowTransparencyLevel.Blur} ;
+                    }
+                });
             RefreshRibbon(null, Ribbon);
             RefreshQat(null, QuickAccessToolbar);
+            
         }
 
         void RefreshRibbon(object oldValue, object newValue)
@@ -153,10 +190,12 @@ namespace AvaloniaUI.Ribbon
         {
             base.OnApplyTemplate(e);
             var window = this;
+            ExtendClientAreaChromeHints = 
+                Avalonia.Platform.ExtendClientAreaChromeHints.PreferSystemChrome |                 
+                Avalonia.Platform.ExtendClientAreaChromeHints.OSXThickTitleBar;
             try
             {
                 var titleBar = GetControl<Control>(e, "PART_TitleBar");
-
                 titleBar.PointerPressed += (object sender, PointerPressedEventArgs ep) =>
                 {
                     if (_titlebarSecondClick)

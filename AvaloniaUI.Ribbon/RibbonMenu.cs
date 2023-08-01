@@ -10,10 +10,11 @@ using System.Linq;
 using System.Timers;
 using Avalonia.Threading;
 using Avalonia.Controls.Templates;
+using Avalonia.VisualTree;
 
 namespace AvaloniaUI.Ribbon
 {
-    public class RibbonMenu :Menu, ItemsControl, IRibbonMenu
+    public sealed class RibbonMenu :ItemsControl, IRibbonMenu
     {
         private IEnumerable _rightColumnItems = new AvaloniaList<object>();
         RibbonMenuItem _previousSelectedItem = null;
@@ -95,20 +96,49 @@ namespace AvaloniaUI.Ribbon
         {
             IsMenuOpenProperty.Changed.AddClassHandler<RibbonMenu>(new Action<RibbonMenu, AvaloniaPropertyChangedEventArgs>((sender, e) =>
             {
-                if (!(bool)e.NewValue)
+                if (e.NewValue is bool boolean)
                 {
-                    sender.SelectedSubItems = null;
-                    sender.HasSelectedItem = false;
+                    if (boolean)
+                    {
+                        //sender.Focus();
+                    }
+                    else
+                    {
+                        sender.SelectedSubItems = null;
+                        sender.HasSelectedItem = false;
 
-                    if (sender._previousSelectedItem != null)
-                        sender._previousSelectedItem.IsSelected = false;
+                        if (sender._previousSelectedItem != null)
+                            sender._previousSelectedItem.IsSelected = false;
+                    }
                 }
             }));
             
             ItemsSourceProperty.Changed.AddClassHandler<RibbonMenu>((x, e) => x.ItemsChanged(e));
         }
 
-        protected virtual void ItemsChanged(AvaloniaPropertyChangedEventArgs args)
+        public RibbonMenu()
+        {
+            /*LostFocus += (_, _) =>
+            {
+                IsMenuOpen = false;
+            };*/
+            /*this.FindAncestorOfType<VisualLayerManager>()*/
+            
+        }
+
+        protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+        {
+            base.OnApplyTemplate(e);
+            var popup = e.NameScope.Find<Popup>("MenuPopup");
+            popup.Closed+= PopupOnClosed;
+        }
+
+        private void PopupOnClosed(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void ItemsChanged(AvaloniaPropertyChangedEventArgs args)
         {
             ResetItemHoverEvents();
             
@@ -121,7 +151,7 @@ namespace AvaloniaUI.Ribbon
           
         }
 
-        protected void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             ResetItemHoverEvents();
         }
@@ -186,5 +216,6 @@ namespace AvaloniaUI.Ribbon
             if (ItemsSource is INotifyCollectionChanged collectionChanged)
                 collectionChanged.CollectionChanged -= ItemsCollectionChanged;
         }
+        
     }
 }

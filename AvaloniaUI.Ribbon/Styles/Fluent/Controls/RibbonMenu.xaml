@@ -27,7 +27,7 @@
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
                           IsChecked="{Binding IsMenuOpen, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"/>
-          <Popup x:Name="MenuPopup" PlacementTarget="{Binding #ContentButton}" Placement="Bottom" VerticalOffset="-30" HorizontalOffset="0" IsOpen="{Binding IsMenuOpen, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}" Width="500" MinHeight="300">
+          <Popup x:Name="MenuPopup" PlacementTarget="{Binding #ContentButton}" Placement="Bottom" IsLightDismissEnabled="True" VerticalOffset="-30" HorizontalOffset="0" IsOpen="{Binding IsMenuOpen, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}" Width="500" MinHeight="300">
             <Border x:Name="MenuRootBorder" Background="{DynamicResource MenuFlyoutPresenterBackground}" BorderBrush="{DynamicResource MenuFlyoutPresenterBorderBrush}" BorderThickness="{DynamicResource MenuFlyoutPresenterBorderThemeThickness}" CornerRadius="{DynamicResource OverlayCornerRadius}" TextBlock.Foreground="{DynamicResource ThemeForegroundBrush}">
             <!--BoxShadow="0 4 10 #40000000"-->
               <DockPanel>
@@ -99,6 +99,9 @@
   <!--Style Selector="local|RibbonMenu /template/ Popup#MenuPopup > PopupRoot">
     <Setter Property="TransparencyLevelHint" Value="Transparent"/>
   </Style-->
+  <!--<Style Selector="local|RibbonMenu:not(:focus-within) /template/ Popup#MenuPopup">
+    <Setter Property="IsOpen" Value="False"/>
+  </Style>-->
   
   <Style Selector="local|RibbonMenuItem">
     <Setter Property="Template">
