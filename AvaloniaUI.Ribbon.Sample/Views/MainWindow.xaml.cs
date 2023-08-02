@@ -11,7 +11,7 @@ using Avalonia.Themes.Fluent;
 
 namespace AvaloniaUI.Ribbon.Samples.Views
 {
-    public class MainWindow : RibbonWindow
+    public partial class MainWindow : RibbonWindow
     {
         public MainWindow()
         {
@@ -37,18 +37,22 @@ namespace AvaloniaUI.Ribbon.Samples.Views
             };
             //this.Find<Button>("TestItemsButton").Click += (sneder, args) => this.Find<QuickAccessToolbar>("QAT").TestItems();
 
-            var lightsToggleSwitch = this.Find<ToggleSwitch>("LightsToggleSwitch");
+            /*var lightsToggleSwitch = this.Find<ToggleSwitch>("LightsToggleSwitch");
             lightsToggleSwitch.Checked += (sneder, e) => RefreshLights(FluentThemeMode.Light);
-            lightsToggleSwitch.Unchecked += (sneder, e) => RefreshLights(FluentThemeMode.Dark);
+            lightsToggleSwitch.Unchecked += (sneder, e) => RefreshLights(FluentThemeMode.Dark);*/
         }
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+#if DEBUG
+            
+                this.AttachDevTools();
+#endif
         }
         
         Uri _baseUri = new Uri("avares://AvaloniaUI.Ribbon.Samples/Styles");
-        void RefreshLights(FluentThemeMode mode)
+        /*void RefreshLights(FluentThemeMode mode)
         {
             App.Current.Styles[0] = new StyleInclude(_baseUri)
             {
@@ -64,6 +68,6 @@ namespace AvaloniaUI.Ribbon.Samples.Views
             {
                 Source = new Uri("avares://Avalonia.Themes.Fluent/Accents/FluentControlResources" + mode + ".xaml")
             };
-        }
+        }*/
     }
 }

@@ -7,7 +7,6 @@
     <Version>1.1.0-beta</Version>
     <Authors>Splitwirez, Alban Mazerolles, Rubal Walia</Authors>
     <PackageId>AvaloniaUIRibbon</PackageId>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Splitwirez/AvaloniaRibbon</PackageProjectUrl>
     <Description>Ribbon UI for Avalonia</Description>
@@ -15,7 +14,7 @@
     <RepositoryUrl>https://github.com/Splitwirez/AvaloniaRibbon.git</RepositoryUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
     <AssemblyName>AvaloniaUI.Ribbon</AssemblyName>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>11</LangVersion>
 	<PackageTags>ribbon;avalonia;avaloniaui;avalonia ui;ribbon;ribbonui;ribbon ui;crossplat;crossplatform;cross platform;xplat;xplatform</PackageTags>
     <!--owners? requireLicenseAcceptance? releaseNotes? copyright?-->
   </PropertyGroup>
@@ -29,8 +28,8 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.0" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
+    <PackageReference Include="Avalonia" Version="11.0.1" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.1" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.1" />
   </ItemGroup>
 </Project>

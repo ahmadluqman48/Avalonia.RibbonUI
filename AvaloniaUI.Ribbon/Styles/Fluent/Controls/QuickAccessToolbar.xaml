@@ -28,10 +28,8 @@
                           <TextBlock Text="{DynamicResource AvaloniaRibbon.CustomizeQAT}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="DemiBold"/>
                         </Border>
                         <ScrollViewer Classes="menuscroller">
-                          <ItemsControl Name="PART_ItemsPresenter"
-                                          ItemsSource="{TemplateBinding ItemsSource}"
+                          <ItemsPresenter Name="PART_ItemsPresenter"
                                           ItemsPanel="{TemplateBinding ItemsPanel}"
-                                          ItemTemplate="{TemplateBinding ItemTemplate}"
                                           Margin="{DynamicResource MenuFlyoutScrollerMargin}"
                                           KeyboardNavigation.TabNavigation="Continue"
                                           Grid.IsSharedSizeScope="True" />

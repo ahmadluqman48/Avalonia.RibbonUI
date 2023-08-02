@@ -204,7 +204,8 @@ namespace AvaloniaUI.Ribbon
                 
                 if (itm.CanAddToQuickAccess)
                 {
-                    ItemsSource = Items.Append(item);
+                    Items.Add(item);
+                    //ItemsSource = Items.Append(item);
                     return true;
                 }
             }
@@ -220,7 +221,7 @@ namespace AvaloniaUI.Ribbon
             else
             {
                 var items = Items.ToList();
-                items.Remove(items.First(x => 
+                Items.Remove(items.First(x => 
                 {
                     if (x == item)
                         return true;
@@ -229,7 +230,7 @@ namespace AvaloniaUI.Ribbon
                     
                     return false;
                 }));
-                ItemsSource = items;
+                //ItemsSource = items;
                 return true;
             }
         }
