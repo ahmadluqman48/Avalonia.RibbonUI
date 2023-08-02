@@ -18,10 +18,12 @@ using System.Runtime.InteropServices;
 using Icon = System.Drawing.Icon;
 using System.Timers;
 using Avalonia.Controls.Chrome;
+using Avalonia.Controls.Metadata;
 using Avalonia.Platform;
 
 namespace AvaloniaUI.Ribbon
 {
+    [TemplatePart("PART_TitleBar", typeof(Control))]
     public class RibbonWindow : Window
     {
         public static readonly StyledProperty<IBrush> TitleBarBackgroundProperty = AvaloniaProperty.Register<RibbonWindow, IBrush>(nameof(TitleBarBackground));
@@ -218,7 +220,7 @@ namespace AvaloniaUI.Ribbon
                     }
                 };
 
-                try
+                /*try
                 {
                     SetupSide("Left_top", StandardCursorType.LeftSide, WindowEdge.West, ref e);
                     SetupSide("Left_mid", StandardCursorType.LeftSide, WindowEdge.West, ref e);
@@ -246,7 +248,7 @@ namespace AvaloniaUI.Ribbon
                 GetControl<Button>(e, "PART_CloseButton").Click += delegate
                 {
                     window.Close();
-                };
+                };*/
             }
             catch (KeyNotFoundException) { }
         }

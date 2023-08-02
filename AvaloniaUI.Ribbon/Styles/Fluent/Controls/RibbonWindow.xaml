@@ -36,11 +36,9 @@
                 <TitleBar x:Name="PART_TitleBar"  />
                 <ContentPresenter x:Name="PART_QuickAccessToolbarPresenter" 
                                   Content="{TemplateBinding QuickAccessToolbar}" 
-                                  Height="33" 
                                   HorizontalAlignment="Left" 
                                   VerticalAlignment="Top"/>
               </Grid>
-              <!--<Border DockPanel.Dock="Top" Height="31"/> ~1~TODO: Its a hack. Binding to titleBar.Height do not work well on Maximized screen@1@-->
               <Grid RowDefinitions="Auto, Auto, Auto">
                 <ContentPresenter Grid.Row="0" 
                                   x:Name="PART_RibbonPresenter" 

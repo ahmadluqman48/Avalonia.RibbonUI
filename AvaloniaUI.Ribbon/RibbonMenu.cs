@@ -8,12 +8,14 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Timers;
+using Avalonia.Controls.Metadata;
 using Avalonia.Threading;
 using Avalonia.Controls.Templates;
 using Avalonia.VisualTree;
 
 namespace AvaloniaUI.Ribbon
 {
+    [TemplatePart("MenuPopup", typeof(Popup))]
     public sealed class RibbonMenu :ItemsControl, IRibbonMenu
     {
         private IEnumerable _rightColumnItems = new AvaloniaList<object>();

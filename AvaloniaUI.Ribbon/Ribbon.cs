@@ -18,13 +18,23 @@ using System.Windows.Input;
 using System.Collections.ObjectModel;
 using System.Reactive.Disposables;
 using Avalonia.Controls.Generators;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Templates;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AvaloniaUI.Ribbon
 {
-    public class Ribbon :/*Menu,*/ TabControl, IKeyTipHandler 
+    [TemplatePart("PART_CollapsedContentPopup", typeof(Popup))]
+    [TemplatePart("PART_SelectedGroupsHost", typeof(ItemsControl))]
+    [TemplatePart("PART_GroupsPresenterHolder", typeof(ContentControl))]
+    [TemplatePart("PART_PopupGroupsPresenterHolder", typeof(ContentControl))]
+    [TemplatePart("PART_ItemsPresenter", typeof(ItemsPresenter))]
+    [TemplatePart("PART_PinLastHoveredControlToQuickAccess", typeof(MenuItem))]
+    [TemplatePart("PART_ContentAreaContextMenu", typeof(ContextMenu))]
+    [TemplatePart("PART_CollapseRibbon", typeof(MenuItem))]
+    
+    public class Ribbon :TabControl, IKeyTipHandler 
     {
         public static readonly StyledProperty<Orientation> OrientationProperty = StackPanel.OrientationProperty.AddOwner<Ribbon>();
         public Orientation Orientation

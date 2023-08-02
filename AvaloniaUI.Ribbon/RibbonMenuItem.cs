@@ -7,11 +7,13 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Timers;
 using System.Windows.Input;
+using Avalonia.Controls.Metadata;
 using Avalonia.Interactivity;
 
 namespace AvaloniaUI.Ribbon
 {
 
+    [TemplatePart("PART_ContentButton", typeof(Button))]
     public class RibbonMenuItem : HeaderedItemsControl
     {
         static RibbonMenuItem()

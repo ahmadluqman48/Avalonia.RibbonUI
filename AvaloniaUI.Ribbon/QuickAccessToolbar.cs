@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Avalonia.Controls.Metadata;
 using ReactiveUI;
 using Avalonia.Threading;
 using Avalonia.Data;
@@ -30,6 +31,7 @@ using Avalonia.Markup.Xaml.MarkupExtensions;
 
 namespace AvaloniaUI.Ribbon
 {
+    [TemplatePart("PART_MoreButton", typeof(ToggleButton))]
     public class QuickAccessToolbar : ItemsControl//, IKeyTipHandler
     {
         public static readonly StyledProperty<Ribbon> RibbonProperty = AvaloniaProperty.Register<QuickAccessToolbar, Ribbon>(nameof(Ribbon));

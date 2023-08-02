@@ -7,10 +7,18 @@ using Avalonia.Styling;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Avalonia.Controls.Metadata;
 using Avalonia.Data;
 
 namespace AvaloniaUI.Ribbon
 {
+    [TemplatePart("PART_ItemsPresenter", typeof(ItemsPresenter))]
+    [TemplatePart("PART_ItemsPresenterHolder", typeof(ContentControl))]
+    [TemplatePart("PART_UpButton", typeof(RepeatButton))]
+    [TemplatePart("PART_DownButton", typeof(RepeatButton))]
+    [TemplatePart("PART_ScrollContentPresenter", typeof(GalleryScrollContentPresenter))]
+    [TemplatePart("PART_FlyoutItemsPresenterHolder", typeof(ContentControl))]
+    [TemplatePart("PART_FlyoutRoot", typeof(Control))]
     public class Gallery : ListBox, IRibbonControl
     {
         public static readonly AvaloniaProperty<RibbonControlSize> SizeProperty;
