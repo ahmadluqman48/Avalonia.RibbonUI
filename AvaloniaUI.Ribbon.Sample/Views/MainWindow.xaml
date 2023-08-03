@@ -226,7 +226,17 @@
     </Style>
   </ribbon:RibbonWindow.Styles>
   <ribbon:RibbonWindow.Ribbon>
-    <ribbon:Ribbon HelpButtonCommand="{Binding HelpCommand}">
+    <ribbon:Ribbon>
+      <ribbon:Ribbon.HelpPaneContent>
+        <Button Name="HelpButton" Classes="RibbonHelpButton" HorizontalAlignment="Stretch"
+                Focusable="False" Command="{Binding HelpCommand}"
+                DockPanel.Dock="Bottom" ToolTip.Tip="{DynamicResource AvaloniaRibbon.GetHelp}">
+          <TextBlock HorizontalAlignment="Center" TextAlignment="Center"
+                     VerticalAlignment="Center" Text="?"
+                     Foreground="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
+                     Height="10" Margin="0,-1" />
+        </Button>
+      </ribbon:Ribbon.HelpPaneContent>
       <ribbon:Ribbon.Menu>
         <ribbon:RibbonMenu RightColumnHeader="Recent stuff" ribbon:KeyTip.KeyTipKeys="F">
           <ribbon:RibbonMenuItem Header="Item 1">

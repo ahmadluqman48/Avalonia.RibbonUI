@@ -33,7 +33,7 @@
             </VisualLayerManager.ChromeOverlayLayer>
             <DockPanel>
               <Grid DockPanel.Dock="Top">
-                <TitleBar x:Name="PART_TitleBar"  />
+                <TitleBar x:Name="PART_TitleBar" Background="{TemplateBinding TitleBarBackground}" Foreground="{TemplateBinding TitleBarForeground}"/>
                 <ContentPresenter x:Name="PART_QuickAccessToolbarPresenter" 
                                   Content="{TemplateBinding QuickAccessToolbar}" 
                                   HorizontalAlignment="Left" 
@@ -67,12 +67,12 @@
                  Height="1" 
                  VerticalAlignment="Top" />
           <Panel x:Name="PART_Container">
-            <Panel x:Name="PART_PictureBar" Background="#01000000" VerticalAlignment="Center">
+            <Panel x:Name="PART_PictureBar" Background="#01000000" VerticalAlignment="Center" >
               <Image Classes="IconImage" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" Source="{Binding Icon, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WindowIconToImageConverter}}" MaxWidth="16" MaxHeight="16" Margin="9,0" IsHitTestVisible="False"/>
             </Panel>
             <Border x:Name="PART_Background"
                     Background="{TemplateBinding Background}"
-                    IsHitTestVisible="False"/>
+                    IsHitTestVisible="False" ZIndex="-1"/>
             <CaptionButtons x:Name="PART_CaptionButtons"
                             VerticalAlignment="Top" 
                             HorizontalAlignment="Right"

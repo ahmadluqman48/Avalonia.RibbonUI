@@ -50,35 +50,16 @@ namespace AvaloniaUI.Ribbon
         public static readonly StyledProperty<IRibbonMenu> MenuProperty = AvaloniaProperty.Register<Ribbon, IRibbonMenu>(nameof(Menu));
         public static readonly StyledProperty<bool> IsMenuOpenProperty = AvaloniaProperty.Register<Ribbon, bool>(nameof(IsMenuOpen));
         public static readonly DirectProperty<Ribbon, ObservableCollection<RibbonGroupBox>> SelectedGroupsProperty = AvaloniaProperty.RegisterDirect<Ribbon, ObservableCollection<RibbonGroupBox>>(nameof(SelectedGroups), o => o.SelectedGroups, (o, v) => o.SelectedGroups = v);
-        
-        /*
-        /// <summary>
-        /// Defines the <see cref="Ribbon" /> property.
-        /// </summary>
-        public static readonly StyledProperty<IDataTemplate> ContentTemplateProperty = ContentControl.ContentTemplateProperty.AddOwner<Ribbon>();
-        /// <summary>The selected content property</summary>
-        public static readonly DirectProperty<Ribbon, object> SelectedContentProperty = AvaloniaProperty.RegisterDirect<Ribbon, object>(nameof (SelectedContent), (Func<Ribbon, object>) (o => o.SelectedContent));
-        /// <summary>The selected content template property</summary>
-        public static readonly DirectProperty<Ribbon, IDataTemplate> SelectedContentTemplateProperty = AvaloniaProperty.RegisterDirect<Ribbon, IDataTemplate>(nameof (SelectedContentTemplate), (Func<Ribbon, IDataTemplate>) (o => o.SelectedContentTemplate));
-        */
+
+        public static readonly StyledProperty<object> HelpPaneContentProperty =
+            AvaloniaProperty.Register<Ribbon, object>(nameof(HelpPaneContent));
+   
         
         public static readonly DirectProperty<Ribbon, ObservableCollection<Control>> TabsProperty = AvaloniaProperty.RegisterDirect<Ribbon, ObservableCollection<Control>>(nameof(Tabs), o => o.Tabs, (o, v) => o.Tabs = v);
-        
-        public static readonly DirectProperty<Ribbon, ICommand> HelpButtonCommandProperty = AvaloniaProperty.RegisterDirect<Ribbon, ICommand>(nameof(HelpButtonCommand), o => o.HelpButtonCommand, (o, v) => o.HelpButtonCommand = v);
-        ICommand _helpCommand;
 
         public static readonly DirectProperty<MenuBase, bool> IsOpenProperty = AvaloniaProperty.RegisterDirect<MenuBase, bool>(nameof (IsOpen), (Func<MenuBase, bool>) (o => o.IsOpen));
 
         private bool _isOpen;
-        /*
-        /// <summary>
-        /// Defines the <see cref="P:Avalonia.Controls.TabControl.HorizontalContentAlignment" /> property.
-        /// </summary>
-        public static readonly StyledProperty<HorizontalAlignment> HorizontalContentAlignmentProperty = ContentControl.HorizontalContentAlignmentProperty.AddOwner<Ribbon>();
-        /// <summary>
-        /// Defines the <see cref="P:Avalonia.Controls.TabControl.VerticalContentAlignment" /> property.
-        /// </summary>
-        public static readonly StyledProperty<VerticalAlignment> VerticalContentAlignmentProperty = ContentControl.VerticalContentAlignmentProperty.AddOwner<Ribbon>();*/
         public static readonly StyledProperty<QuickAccessToolbar> QuickAccessToolbarProperty = AvaloniaProperty.Register<Ribbon, QuickAccessToolbar>(nameof(QuickAccessToolbar));
         public QuickAccessToolbar QuickAccessToolbar
         {
@@ -93,14 +74,7 @@ namespace AvaloniaUI.Ribbon
             SelectedIndexProperty.Changed.AddClassHandler<Ribbon>((x, e) => x.RefreshSelectedGroups());
 
             IsCollapsedProperty.Changed.AddClassHandler<Ribbon,bool>(((sender, args) => sender.UpdatePresenterLocation(args.NewValue.Value)));
-
             
-            /*AccessKeyHandler.AccessKeyPressedEvent.AddClassHandler<Ribbon>((sender, e) =>
-            {
-                if (e.Source is Control ctrl)
-                    (sender as Ribbon).HandleKeyTipControl(ctrl);
-            });*/
-
             KeyTip.ShowChildKeyTipKeysProperty.Changed.AddClassHandler<Ribbon>(new Action<Ribbon, AvaloniaPropertyChangedEventArgs>((sender, args) =>
             {
                 bool isOpen = (bool)args.NewValue;
@@ -108,19 +82,12 @@ namespace AvaloniaUI.Ribbon
                     sender.Focus();
                 sender.SetChildKeyTipsVisibility(isOpen);
             }));
-            
-            //BoundsProperty.Changed.AddClassHandler<RibbonGroupsStackPanel>((sender, e) => sender.InvalidateMeasure());
 
             TabsProperty.Changed.AddClassHandler<Ribbon>((sender, e) => sender.RefreshTabs());
         }
 
         public Ribbon()
         {
-            #warning HACK
-            var binder = ItemsSourceProperty.Bind();
-            binder.Source = this;
-            binder.Property = TabsProperty;
-            binder.Subscribe();
         }
 
         RibbonTab _prevSelectedTab = null;
@@ -137,11 +104,7 @@ namespace AvaloniaUI.Ribbon
             {
                 foreach (RibbonGroupBox box in tab.Groups)
                     SelectedGroups.Add(box);
-                
-                /*var last = SelectedGroups.Last();
-                SelectedGroups.Remove(last);
-                SelectedGroups.Add(last);*/
-                
+
                 if (tab.IsContextual)
                 {
                     tab.IsSelected = true;
@@ -152,46 +115,50 @@ namespace AvaloniaUI.Ribbon
 
         void RefreshTabs()
         {
-            if (ItemsSource is IList list)
+            if (Tabs is {})
             {
-                list.Clear();
-                foreach (Control ctrl in Tabs)
+                if (ItemsSource is IList list)
                 {
-                    if (ctrl is RibbonContextualTabGroup ctx)
+                    list.Clear();
+                    foreach (Control ctrl in Tabs)
                     {
-                        foreach (RibbonTab tb in ctx.Items)
-                            list.Add(tb);
+                        if (ctrl is RibbonContextualTabGroup ctx)
+                        {
+                            foreach (RibbonTab tb in ctx.Items)
+                                list.Add(tb);
+                        }
+                        else if (ctrl is RibbonTab tab)
+                            list.Add(tab);
                     }
-                    else if (ctrl is RibbonTab tab)
-                        list.Add(tab);
                 }
-            }
-            else
-            {
-                var newTabsList = new List<Control>();
-                foreach (Control ctrl in Tabs)
+                else
                 {
-                    if (ctrl is RibbonContextualTabGroup ctx)
+                    var newTabsList = new List<Control>();
+                    foreach (Control ctrl in Tabs)
                     {
-                        foreach (RibbonTab tb in ctx.Items)
-                            newTabsList.Add(tb);
+                        if (ctrl is RibbonContextualTabGroup ctx)
+                        {
+                            foreach (RibbonTab tb in ctx.Items)
+                                newTabsList.Add(tb);
+                        }
+                        else if (ctrl is RibbonTab tab)
+                            newTabsList.Add(tab);
                     }
-                    else if (ctrl is RibbonTab tab)
-                        newTabsList.Add(tab);
-                }
 
-                ItemsSource = newTabsList;
+                    ItemsSource = newTabsList;
+                }
             }
             
            
         }
 
         ICanAddToQuickAccess _rightClicked = null;
+        
 
-        public ICommand HelpButtonCommand
+        public object HelpPaneContent
         {
-            get => _helpCommand;
-            set => SetAndRaise(HelpButtonCommandProperty, ref _helpCommand, value);
+            get => GetValue(HelpPaneContentProperty);
+            set => SetValue(HelpPaneContentProperty, value);
         }
 
         void SetChildKeyTipsVisibility(bool open)

@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>AvaloniaUI.Ribbon</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Version>1.1.0-beta</Version>
+    <Version>2.0.1-beta</Version>
     <Authors>Splitwirez, Alban Mazerolles, Rubal Walia</Authors>
     <PackageId>AvaloniaUIRibbon</PackageId>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -16,6 +16,7 @@
     <AssemblyName>AvaloniaUI.Ribbon</AssemblyName>
     <LangVersion>11</LangVersion>
 	<PackageTags>ribbon;avalonia;avaloniaui;avalonia ui;ribbon;ribbonui;ribbon ui;crossplat;crossplatform;cross platform;xplat;xplatform</PackageTags>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <!--owners? requireLicenseAcceptance? releaseNotes? copyright?-->
   </PropertyGroup>
   <ItemGroup>
