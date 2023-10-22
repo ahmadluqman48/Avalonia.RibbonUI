@@ -1,11 +1,7 @@
 ﻿using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
-using Avalonia.Interactivity;
-using Avalonia.Styling;
+
 using System;
-using System.Diagnostics;
 using System.Windows.Input;
 
 namespace AvaloniaUI.Ribbon

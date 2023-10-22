@@ -12,15 +12,16 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Threading;
 using Avalonia.Controls.Templates;
 using Avalonia.VisualTree;
+using System.Runtime.CompilerServices;
+using Avalonia.Platform;
 
 namespace AvaloniaUI.Ribbon
 {
     [TemplatePart("MenuPopup", typeof(Popup))]
-    public sealed class RibbonMenu :ItemsControl, IRibbonMenu
+    public sealed class RibbonMenu : ItemsControl, IRibbonMenu
     {
         private IEnumerable _rightColumnItems = new AvaloniaList<object>();
-        RibbonMenuItem _previousSelectedItem = null;
-        
+        private RibbonMenuItem _previousSelectedItem = null;
 
         public static readonly StyledProperty<object> ContentProperty = ContentControl.ContentProperty.AddOwner<RibbonMenu>();
 
@@ -62,7 +63,6 @@ namespace AvaloniaUI.Ribbon
             set => SetValue(RightColumnHeaderProperty, value);
         }
 
-
         public static readonly DirectProperty<RibbonMenu, IEnumerable> RightColumnItemsProperty = AvaloniaProperty.RegisterDirect<RibbonMenu, IEnumerable>(nameof(RightColumnItems), o => o.RightColumnItems, (o, v) => o.RightColumnItems = v);
 
         public IEnumerable RightColumnItems
@@ -70,8 +70,6 @@ namespace AvaloniaUI.Ribbon
             get => _rightColumnItems;
             set => SetAndRaise(RightColumnItemsProperty, ref _rightColumnItems, value);
         }
-
-
 
         private static readonly FuncTemplate<Panel> DefaultPanel = new FuncTemplate<Panel>(() => new StackPanel());
 
@@ -83,7 +81,6 @@ namespace AvaloniaUI.Ribbon
             set => SetValue(RightColumnItemsPanelProperty, value);
         }
 
-
         public static readonly StyledProperty<IDataTemplate> RightColumnItemTemplateProperty = AvaloniaProperty.Register<RibbonMenu, IDataTemplate>(nameof(RightColumnItemTemplate));
 
         public IDataTemplate RightColumnItemTemplate
@@ -91,8 +88,6 @@ namespace AvaloniaUI.Ribbon
             get => GetValue(RightColumnItemTemplateProperty);
             set => SetValue(RightColumnItemTemplateProperty, value);
         }
-        
-
 
         static RibbonMenu()
         {
@@ -114,7 +109,7 @@ namespace AvaloniaUI.Ribbon
                     }
                 }
             }));
-            
+
             ItemsSourceProperty.Changed.AddClassHandler<RibbonMenu>((x, e) => x.ItemsChanged(e));
         }
 
@@ -125,32 +120,29 @@ namespace AvaloniaUI.Ribbon
                 IsMenuOpen = false;
             };*/
             /*this.FindAncestorOfType<VisualLayerManager>()*/
-            
         }
 
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
             base.OnApplyTemplate(e);
             var popup = e.NameScope.Find<Popup>("MenuPopup");
-            popup.Closed+= PopupOnClosed;
+            popup.Closed += PopupOnClosed;
         }
 
         private void PopupOnClosed(object sender, EventArgs e)
         {
-            
         }
 
         private void ItemsChanged(AvaloniaPropertyChangedEventArgs args)
         {
             ResetItemHoverEvents();
-            
+
             if (args.OldValue is INotifyCollectionChanged oldSource)
                 oldSource.CollectionChanged -= ItemsCollectionChanged;
             if (args.NewValue is INotifyCollectionChanged newSource)
             {
                 newSource.CollectionChanged += ItemsCollectionChanged;
             }
-          
         }
 
         private void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -158,7 +150,7 @@ namespace AvaloniaUI.Ribbon
             ResetItemHoverEvents();
         }
 
-        void ResetItemHoverEvents()
+        private void ResetItemHoverEvents()
         {
             foreach (RibbonMenuItem item in Items.OfType<RibbonMenuItem>())
             {
@@ -218,6 +210,5 @@ namespace AvaloniaUI.Ribbon
             if (ItemsSource is INotifyCollectionChanged collectionChanged)
                 collectionChanged.CollectionChanged -= ItemsCollectionChanged;
         }
-        
     }
 }
