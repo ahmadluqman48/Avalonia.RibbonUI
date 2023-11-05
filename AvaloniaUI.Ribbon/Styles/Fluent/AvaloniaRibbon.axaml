@@ -3,7 +3,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="/Styles/Fluent/Res.axaml" />
-
+				<ResourceInclude Source="avares://AvaloniaUI.Ribbon/Controls/SplitButtonControl.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Styles.Resources>
@@ -13,7 +13,7 @@
     <StyleInclude Source="/Styles/Fluent/Controls/RibbonTab.axaml" />
     <StyleInclude Source="/Styles/Fluent/Controls/RibbonMenu.axaml" />
     <StyleInclude Source="/Styles/Fluent/Controls/RibbonButton.axaml" />
-    <StyleInclude Source="/Styles/Fluent/Controls/RibbonSplitButton.axaml" />
+	<!--StyleInclude Source="/Styles/Fluent/Controls/RibbonSplitButton.axaml" /-->
     <StyleInclude Source="/Styles/Fluent/Controls/RibbonDropDownButton.axaml" />
     <StyleInclude Source="/Styles/Fluent/Controls/RibbonDropDownButtonItemPresenter.axaml" />
     <StyleInclude Source="/Styles/Fluent/Controls/RibbonToggleButton.axaml" />
