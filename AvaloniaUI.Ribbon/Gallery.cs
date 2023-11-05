@@ -6,6 +6,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 
 using AvaloniaUI.Ribbon.Contracts;
+using AvaloniaUI.Ribbon.Helpers;
 using AvaloniaUI.Ribbon.Models;
 
 using System;

@@ -2,6 +2,7 @@
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using AvaloniaUI.Ribbon.Contracts;
+using AvaloniaUI.Ribbon.Helpers;
 using AvaloniaUI.Ribbon.Models;
 using System;
 
