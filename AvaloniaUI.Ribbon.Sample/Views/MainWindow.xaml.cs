@@ -1,13 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using AvaloniaUI.Ribbon;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
-using Avalonia.Markup.Xaml.MarkupExtensions;
-using Avalonia.Markup.Xaml.Styling;
+
+using AvaloniaUI.Ribbon.Windows;
+
 using System;
-using Avalonia.Media;
-using Avalonia.Themes.Fluent;
 
 namespace AvaloniaUI.Ribbon.Samples.Views
 {
@@ -46,12 +44,12 @@ namespace AvaloniaUI.Ribbon.Samples.Views
         {
             AvaloniaXamlLoader.Load(this);
 #if DEBUG
-            
-                this.AttachDevTools();
+
+            this.AttachDevTools();
 #endif
         }
-        
-        Uri _baseUri = new Uri("avares://AvaloniaUI.Ribbon.Samples/Styles");
+
+        private Uri _baseUri = new Uri("avares://AvaloniaUI.Ribbon.Samples/Styles");
         /*void RefreshLights(FluentThemeMode mode)
         {
             App.Current.Styles[0] = new StyleInclude(_baseUri)

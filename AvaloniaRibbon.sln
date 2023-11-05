@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvaloniaUI.Ribbon", "Avalon
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvaloniaUI.Ribbon.Windows", "AvaloniaUI.Ribbon.Windows\AvaloniaUI.Ribbon.Windows.csproj", "{F2F7E655-E83D-4024-B155-CA5FCE3A827B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvaloniaUI.Ribbon.Sample.Browser", "AvaloniaUI.Ribbon.Sample.Browser\AvaloniaUI.Ribbon.Sample.Browser.csproj", "{3BCAE1D3-8AC3-4103-B174-EEF8A00B2141}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F2F7E655-E83D-4024-B155-CA5FCE3A827B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2F7E655-E83D-4024-B155-CA5FCE3A827B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2F7E655-E83D-4024-B155-CA5FCE3A827B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BCAE1D3-8AC3-4103-B174-EEF8A00B2141}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BCAE1D3-8AC3-4103-B174-EEF8A00B2141}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BCAE1D3-8AC3-4103-B174-EEF8A00B2141}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BCAE1D3-8AC3-4103-B174-EEF8A00B2141}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

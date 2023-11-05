@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace AvaloniaUI.Ribbon.Samples.ViewModels
 {
@@ -18,6 +16,9 @@ namespace AvaloniaUI.Ribbon.Samples.ViewModels
         private bool _showContextualGroup2 = false;
         [ObservableProperty]
         private bool _showContextualGroup3 = false;
+
+        [ObservableProperty]
+        private bool _switchTheme;
 
 
       
@@ -41,6 +42,24 @@ namespace AvaloniaUI.Ribbon.Samples.ViewModels
 
             Console.WriteLine("OnClickCommand invoked: " + paramString);
             LastActionText = paramString;
+        }
+
+        /// <summary>
+        /// Called when [switch theme changed].
+        /// </summary>
+        /// <param name="value">if set to <c>true</c> [value].</param>
+        partial void OnSwitchThemeChanged(bool value)
+        {
+            switch (value)
+            {
+                case true:
+                    App.ThemeManager.Switch(0);
+                    break;
+                    case false:
+                    App.ThemeManager.Switch(1);
+                    break;
+
+            }
         }
     }
 }
