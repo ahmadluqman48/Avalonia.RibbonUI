@@ -8,7 +8,8 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
-using Avalonia.VisualTree;
+
+using AvaloniaUI.Ribbon.Contracts;
 
 using System;
 using System.Collections;
@@ -27,7 +28,7 @@ namespace AvaloniaUI.Ribbon
     [TemplatePart("PART_PinLastHoveredControlToQuickAccess", typeof(MenuItem))]
     [TemplatePart("PART_ContentAreaContextMenu", typeof(ContextMenu))]
     [TemplatePart("PART_CollapseRibbon", typeof(MenuItem))]
-    public class Ribbon : TabControl, IKeyTipHandler
+    public class Ribbon : TabControl, IRibbon
     {
         #region Static Properties
 
@@ -44,7 +45,6 @@ namespace AvaloniaUI.Ribbon
         public static readonly RoutedEvent<RoutedEventArgs> MenuClosedEvent = RoutedEvent.Register<Ribbon, RoutedEventArgs>(nameof(MenuClosed), RoutingStrategies.Bubble);
         public static readonly StyledProperty<IRibbonMenu> MenuProperty = AvaloniaProperty.Register<Ribbon, IRibbonMenu>(nameof(Menu));
         public static readonly StyledProperty<Orientation> OrientationProperty = StackPanel.OrientationProperty.AddOwner<Ribbon>();
-        public static readonly StyledProperty<QuickAccessToolbar> QuickAccessToolbarProperty = AvaloniaProperty.Register<Ribbon, QuickAccessToolbar>(nameof(QuickAccessToolbar));
 
         public static readonly RoutedEvent<RoutedEventArgs> RibbonKeyTipsOpenedEvent = RoutedEvent.Register<MenuBase, RoutedEventArgs>("RibbonKeyTipsOpened", RoutingStrategies.Bubble);
 
@@ -169,12 +169,6 @@ namespace AvaloniaUI.Ribbon
             set => SetValue(OrientationProperty, value);
         }
 
-        public QuickAccessToolbar QuickAccessToolbar
-        {
-            get => GetValue(QuickAccessToolbarProperty);
-            set => SetValue(QuickAccessToolbarProperty, value);
-        }
-
         public ObservableCollection<RibbonGroupBox> SelectedGroups
         {
             get => _selectedGroups;
@@ -193,7 +187,7 @@ namespace AvaloniaUI.Ribbon
 
         #region Methods
 
-        public void ActivateKeyTips(Ribbon ribbon, IKeyTipHandler prev)
+        public void ActivateKeyTips(IRibbon ribbon, IKeyTipHandler prev)
         {
             foreach (RibbonTab t in Items)
                 KeyTip.GetKeyTipKeys(t);
@@ -396,16 +390,6 @@ namespace AvaloniaUI.Ribbon
                 }
             };*/
 
-            var pinToQat = e.NameScope.Find<MenuItem>("PART_PinLastHoveredControlToQuickAccess");
-            if (pinToQat is { })
-            {
-                pinToQat.Click += (_, _) =>
-                {
-                    if (_rightClicked != null)
-                        QuickAccessToolbar?.AddItem(_rightClicked);
-                };
-            }
-
             _ctxMenu = e.NameScope.Find<ContextMenu>("PART_ContentAreaContextMenu");
 
             var collapseRibbon = e.NameScope.Find<MenuItem>("PART_CollapseRibbon");
@@ -429,17 +413,6 @@ namespace AvaloniaUI.Ribbon
                 _groupsHost.AddHandler<PointerReleasedEventArgs>(PointerReleasedEvent,
                     (_, args) =>
                     {
-                        if (args.Source is Visual visual && pinToQat is { })
-                        {
-                            var ctrl = visual.FindAncestorOfType<ICanAddToQuickAccess>();
-
-                            _rightClicked = ctrl;
-
-                            if (QuickAccessToolbar != null)
-                                pinToQat.IsEnabled = (_rightClicked != null) && _rightClicked.CanAddToQuickAccess && (!QuickAccessToolbar.ContainsItem(_rightClicked));
-                            else
-                                pinToQat.IsEnabled = false;
-                        }
                     }, handledEventsToo: true);
             }
 

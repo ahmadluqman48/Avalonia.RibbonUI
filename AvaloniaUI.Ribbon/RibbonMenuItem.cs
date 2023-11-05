@@ -1,14 +1,13 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
-using Avalonia.Styling;
+using Avalonia.Interactivity;
+
 using System;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Timers;
 using System.Windows.Input;
-using Avalonia.Controls.Metadata;
-using Avalonia.Interactivity;
 
 namespace AvaloniaUI.Ribbon
 {

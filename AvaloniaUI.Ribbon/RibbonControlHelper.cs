@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
+
+using AvaloniaUI.Ribbon.Contracts;
+using AvaloniaUI.Ribbon.Models;
+using System;
 
 namespace AvaloniaUI.Ribbon
 {

@@ -1,37 +1,29 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Collections;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Metadata;
-using Avalonia.Styling;
+
+using AvaloniaUI.Ribbon.Contracts;
+using AvaloniaUI.Ribbon.Helpers;
 using System;
-using System.Collections;
-using System.Diagnostics;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace AvaloniaUI.Ribbon
 {
     public class RibbonTab : TabItem, IKeyTipHandler
     {
-        protected override Type StyleKeyOverride => typeof(RibbonTab);
+        #region Fields
 
         public static readonly DirectProperty<RibbonTab, ObservableCollection<RibbonGroupBox>> GroupsProperty = AvaloniaProperty.RegisterDirect<RibbonTab, ObservableCollection<RibbonGroupBox>>(nameof(Groups), o => o.Groups, (o, v) => o.Groups = v);
-
-        private ObservableCollection<RibbonGroupBox> _groups = new ObservableCollection<RibbonGroupBox>();
-        /*[Content]*/
-        public ObservableCollection<RibbonGroupBox> Groups
-        {
-            get { return _groups; }
-            set { SetAndRaise(GroupsProperty, ref _groups, value); }
-        }
-
         public static readonly StyledProperty<bool> IsContextualProperty = AvaloniaProperty.Register<RibbonTab, bool>(nameof(IsContextual), false);
-        public bool IsContextual
-        {
-            get => GetValue(IsContextualProperty);
-            set => SetValue(IsContextualProperty, value);
-        }
+        private ObservableCollection<RibbonGroupBox> _groups = new ObservableCollection<RibbonGroupBox>();
+        private IKeyTipHandler _prev;
+        private IRibbon _ribbon;
+
+        #endregion Fields
+
+        #region Constructors
 
         static RibbonTab()
         {
@@ -69,28 +61,33 @@ namespace AvaloniaUI.Ribbon
             LostFocus += (sneder, args) => KeyTip.SetShowChildKeyTipKeys(this, false);
         }
 
-        Ribbon _ribbon;
-        IKeyTipHandler _prev;
-        public void ActivateKeyTips(Ribbon ribbon, IKeyTipHandler prev)
+        #endregion Constructors
+
+        public ObservableCollection<RibbonGroupBox> Groups
+        {
+            get { return _groups; }
+            set { SetAndRaise(GroupsProperty, ref _groups, value); }
+        }
+
+        public bool IsContextual
+        {
+            get => GetValue(IsContextualProperty);
+            set => SetValue(IsContextualProperty, value);
+        }
+
+        protected override Type StyleKeyOverride => typeof(RibbonTab);
+        /*[Content]*/
+
+        public void ActivateKeyTips(IRibbon ribbon, IKeyTipHandler prev)
         {
             _ribbon = ribbon;
             _prev = prev;
             foreach (RibbonGroupBox g in Groups)
                 Debug.WriteLine("GROUP KEYS: " + KeyTip.GetKeyTipKeys(g));
-            
+
             Focus();
             KeyTip.SetShowChildKeyTipKeys(this, true);
             KeyDown += RibbonTab_KeyDown;
-        }
-
-        private void RibbonTab_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = HandleKeyTipKeyPress(e.Key);
-            if (e.Handled)
-                _ribbon.IsCollapsedPopupOpen = false;
-
-            KeyTip.SetShowChildKeyTipKeys(this, false);
-            KeyDown -= RibbonTab_KeyDown;
         }
 
         public bool HandleKeyTipKeyPress(Key key)
@@ -157,6 +154,16 @@ namespace AvaloniaUI.Ribbon
         {
             KeyTip.SetShowChildKeyTipKeys(this, false);
             RibbonControlExtensions.GetParentRibbon(this)?.Close();
+        }
+
+        private void RibbonTab_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = HandleKeyTipKeyPress(e.Key);
+            if (e.Handled)
+                _ribbon.IsCollapsedPopupOpen = false;
+
+            KeyTip.SetShowChildKeyTipKeys(this, false);
+            KeyDown -= RibbonTab_KeyDown;
         }
     }
 }

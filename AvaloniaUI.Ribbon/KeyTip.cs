@@ -1,50 +1,41 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.Media;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reactive.Linq;
-using System.Text;
 
 namespace AvaloniaUI.Ribbon
 {
     public class KeyTip
     {
+        private static Dictionary<Control, Popup> _keyTips = new Dictionary<Control, Popup>();
+        #region Static Properties
         public static readonly AttachedProperty<string> KeyTipKeysProperty = AvaloniaProperty.RegisterAttached<KeyTip, Control, string>("KeyTipKeys");
-        public static string GetKeyTipKeys(Control element) => element.GetValue(KeyTipKeysProperty);
-        public static void SetKeyTipKeys(Control element, string value) => element.SetValue(KeyTipKeysProperty, value);
-        public static bool HasKeyTipKey(Control element, Key key)
-        {
-            string keys = GetKeyTipKeys(element);
-            return HasKeyTipKeys(element) && keys.ToLowerInvariant().Contains(key.ToString().ToLowerInvariant());
-        }
-        public static bool HasKeyTipKeys(Control element)
-        {
-            string keys = GetKeyTipKeys(element);
-            return (!string.IsNullOrEmpty(keys)) && (!string.IsNullOrWhiteSpace(keys));
-        }
-
 
         public static readonly AttachedProperty<bool> ShowChildKeyTipKeysProperty = AvaloniaProperty.RegisterAttached<KeyTip, Control, bool>("ShowChildKeyTipKeys");
-        public static bool GetShowChildKeyTipKeys(Control element) => element.GetValue(ShowChildKeyTipKeysProperty);
-        public static void SetShowChildKeyTipKeys(Control element, bool value) => element.SetValue(ShowChildKeyTipKeysProperty, value);
+        #endregion
 
-        private KeyTip() { }
+        private KeyTip()
+        { }
 
+        #region Methods
+        private static void KeyTip_Opened(object sender, EventArgs e)
+        {
+            var sned = sender as Popup;
+            sned.Host?.ConfigurePosition(sned.PlacementTarget, sned.Placement, new Point(sned.HorizontalOffset, sned.VerticalOffset));
+        }
 
-        static Dictionary<Control, Popup> _keyTips = new Dictionary<Control, Popup>();
         public static Popup GetKeyTip(Control element)
         {
             if (_keyTips.TryGetValue(element, out Popup val))
                 return val;
             else
             {
-
                 var tipContent = new ContentControl()
                 {
                     //Background = new SolidColorBrush(Colors.White),
@@ -53,7 +44,7 @@ namespace AvaloniaUI.Ribbon
                 tipContent.Classes.Add("KeyTipContent");
                 if (tipContent.Content != null)
                     Debug.WriteLine("TEXT: " + tipContent.Content.ToString());
-                
+
                 var tip = new Popup()
                 {
                     PlacementTarget = element,
@@ -68,7 +59,7 @@ namespace AvaloniaUI.Ribbon
                 tipContent.InvalidateArrange();
                 tipContent.InvalidateMeasure();
                 tipContent.InvalidateVisual();
-                
+
                 tip.InvalidateArrange();
                 tip.InvalidateMeasure();
                 tip.InvalidateVisual();
@@ -79,16 +70,31 @@ namespace AvaloniaUI.Ribbon
                 ((ISetLogicalParent)tip).SetParent(element);
 
                 tip.Opened += KeyTip_Opened;
-                
+
                 _keyTips.Add(element, tip);
                 return _keyTips[element];
             }
         }
 
-        private static void KeyTip_Opened(object sender, EventArgs e)
+        public static string GetKeyTipKeys(Control element) => element.GetValue(KeyTipKeysProperty);
+
+        public static bool GetShowChildKeyTipKeys(Control element) => element.GetValue(ShowChildKeyTipKeysProperty);
+
+        public static bool HasKeyTipKey(Control element, Key key)
         {
-            var sned = sender as Popup;
-            sned.Host?.ConfigurePosition(sned.PlacementTarget, sned.Placement, new Point(sned.HorizontalOffset, sned.VerticalOffset));
+            string keys = GetKeyTipKeys(element);
+            return HasKeyTipKeys(element) && keys.ToLowerInvariant().Contains(key.ToString().ToLowerInvariant());
         }
+
+        public static bool HasKeyTipKeys(Control element)
+        {
+            string keys = GetKeyTipKeys(element);
+            return (!string.IsNullOrEmpty(keys)) && (!string.IsNullOrWhiteSpace(keys));
+        }
+
+        public static void SetKeyTipKeys(Control element, string value) => element.SetValue(KeyTipKeysProperty, value);
+
+        public static void SetShowChildKeyTipKeys(Control element, bool value) => element.SetValue(ShowChildKeyTipKeysProperty, value);
+        #endregion
     }
 }

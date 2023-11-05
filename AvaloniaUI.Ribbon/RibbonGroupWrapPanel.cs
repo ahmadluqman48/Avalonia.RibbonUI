@@ -1,11 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using System;
+
+using AvaloniaUI.Ribbon.Contracts;
+using AvaloniaUI.Ribbon.Models;
+
 using System.Linq;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-using Avalonia.Layout;
 
 namespace AvaloniaUI.Ribbon
 {

@@ -1,31 +1,26 @@
 ﻿using Avalonia;
 using Avalonia.Controls.Primitives;
 
+using AvaloniaUI.Ribbon.Models;
+
 using System;
 using System.Windows.Input;
 
 namespace AvaloniaUI.Ribbon
 {
-    public enum GroupDisplayMode
-    {
-        Large,
-        Small/*,
-        Flyout*/
-    }
-
     public class RibbonGroupBox : HeaderedItemsControl
     {
-        public static readonly DirectProperty<RibbonGroupBox, ICommand> CommandProperty;
-        public static readonly StyledProperty<object> CommandParameterProperty = AvaloniaProperty.Register<RibbonGroupBox, object>(nameof(CommandParameter));
-        public static readonly StyledProperty<GroupDisplayMode> DisplayModeProperty = StyledProperty<RibbonGroupBox>.Register<RibbonGroupBox, GroupDisplayMode>(nameof(DisplayMode), GroupDisplayMode.Small);
-        
-        public GroupDisplayMode DisplayMode
-        {
-            get => GetValue(DisplayModeProperty);
-            set => SetValue(DisplayModeProperty, value);
-        }
+        #region Static Properties
 
-        ICommand _command;
+        public static readonly StyledProperty<object> CommandParameterProperty = AvaloniaProperty.Register<RibbonGroupBox, object>(nameof(CommandParameter));
+        public static readonly DirectProperty<RibbonGroupBox, ICommand> CommandProperty;
+        public static readonly StyledProperty<GroupDisplayMode> DisplayModeProperty = StyledProperty<RibbonGroupBox>.Register<RibbonGroupBox, GroupDisplayMode>(nameof(DisplayMode), GroupDisplayMode.Small);
+
+        #endregion Static Properties
+
+        #region Fields
+        private ICommand _command;
+        #endregion
 
         static RibbonGroupBox()
         {
@@ -35,22 +30,12 @@ namespace AvaloniaUI.Ribbon
 
             CommandProperty = AvaloniaProperty.RegisterDirect<RibbonGroupBox, ICommand>(nameof(Command), button => button.Command, (button, command) => button.Command = command, enableDataValidation: true);
         }
+        #region Properties
 
-        
+        public event EventHandler Rearranged;
 
-        protected override Type StyleKeyOverride => typeof(RibbonGroupBox);
+        public event EventHandler Remeasured;
 
-        public object CommandParameter
-        {
-            get { return GetValue(CommandParameterProperty); }
-            set { SetValue(CommandParameterProperty, value); }
-        }
-
-        public ICommand Command
-        {
-            get { return _command; }
-            set { SetAndRaise(CommandProperty, ref _command, value); }
-        }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
@@ -64,7 +49,26 @@ namespace AvaloniaUI.Ribbon
             return base.MeasureOverride(availableSize);
         }
 
-        public event EventHandler Rearranged;
-        public event EventHandler Remeasured;
+        protected override Type StyleKeyOverride => typeof(RibbonGroupBox);
+
+        public ICommand Command
+        {
+            get { return _command; }
+            set { SetAndRaise(CommandProperty, ref _command, value); }
+        }
+
+        public object CommandParameter
+        {
+            get { return GetValue(CommandParameterProperty); }
+            set { SetValue(CommandParameterProperty, value); }
+        }
+
+        public GroupDisplayMode DisplayMode
+        {
+            get => GetValue(DisplayModeProperty);
+            set => SetValue(DisplayModeProperty, value);
+        }
+        #endregion
+
     }
 }
