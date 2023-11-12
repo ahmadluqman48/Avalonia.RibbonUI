@@ -63,7 +63,9 @@ namespace AvaloniaUI.Ribbon
                 panel.Children.Remove(_itemsPresenter);
 
             if (intoFlyout)
+            {
                 _flyoutPresenter.Content = _itemsPresenter;
+            }
             else
                 _mainPresenter.Content = _itemsPresenter;
         }
