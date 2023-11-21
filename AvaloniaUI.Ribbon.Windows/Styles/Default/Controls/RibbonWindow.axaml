@@ -3,9 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:col="clr-namespace:System.Collections"
     xmlns:local="clr-namespace:AvaloniaUI.Ribbon.Windows;assembly=AvaloniaUI.Ribbon.Windows"
-    xmlns:windows="clr-namespace:AvaloniaUI.Ribbon.Windows;assembly=AvaloniaUI.Ribbon.Windows">
+        xmlns:converters="clr-namespace:AvaloniaUI.Ribbon.Windows.Converters;assembly=AvaloniaUI.Ribbon.Windows"
+	xmlns:windows="clr-namespace:AvaloniaUI.Ribbon.Windows;assembly=AvaloniaUI.Ribbon.Windows">
 	<Styles.Resources>
-		<local:WindowIconToImageConverter x:Key="WindowIconToImageConverter" />
+		<converters:WindowIconToImageConverter x:Key="WindowIconToImageConverter" />
 		<!--local:DoubleBindingsToPointConverter x:Key="DoubleBindingsToPointConverter" />
     <local:DoubleArithmeticConverter x:Key="DoubleArithmeticConverter"/-->
 	</Styles.Resources>

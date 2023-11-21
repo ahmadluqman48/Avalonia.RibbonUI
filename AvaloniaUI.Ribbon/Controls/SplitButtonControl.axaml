@@ -4,13 +4,14 @@
     xmlns:local="clr-namespace:AvaloniaUI.Ribbon;assembly=AvaloniaUI.Ribbon">
 	<!--  Add Resources Here  -->
 	<Design.PreviewWith>
-		<local:SplitButtonControl Theme="{StaticResource LargeSplitButton}" />
+		<local:SplitButtonControl />
 	</Design.PreviewWith>
 
 	<ControlTheme x:Key="LargeSplitButton" TargetType="local:SplitButtonControl">
 		<Setter Property="Size" Value="Large" />
 		<Setter Property="HorizontalAlignment" Value="Center" />
 		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="KeyboardNavigation.IsTabStop" Value="True" />
@@ -29,11 +30,11 @@
 
 					<Button x:Name="PART_PrimaryButton"
 							Grid.Row="0"
+							CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource TopCornerRadiusFilterConverter}}"
 							Theme="{StaticResource FluentSplitButtonComponent}"
 							MinWidth="{DynamicResource SplitButtonPrimaryButtonSize}"
 							Foreground="{TemplateBinding Foreground}"
 							Background="{TemplateBinding Background}"
-							BorderBrush="{TemplateBinding BorderBrush}"
 							Command="{TemplateBinding Command}"
 							CommandParameter="{TemplateBinding CommandParameter}"
 							FontFamily="{TemplateBinding FontFamily}"
@@ -63,13 +64,14 @@
 							Background="{TemplateBinding Background}"
 							BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource SecondaryButtonBorderMultiplier}}"
 							Padding="0"
+							CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource BottomCornerRadiusFilterConverter}}"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
 							Focusable="False"
 							KeyboardNavigation.IsTabStop="False">
-						<PathIcon Height="10" Width="10"
+						<PathIcon Height="10" Width="10" Foreground="{TemplateBinding Foreground}"
 								  Data="M1939 486L2029 576L1024 1581L19 576L109 486L1024 1401L1939 486Z" />
 					</Button>
 				</Grid>
@@ -77,20 +79,19 @@
 		</Setter>
 		<Setter Property="QuickAccessTemplate">
 			<ControlTemplate>
-				<local:RibbonSplitButton
-                    Height="34"
+				<local:SplitButtonControl
+					Theme="{DynamicResource SmallSplitButton}"
+					VerticalAlignment="Stretch"
                     local:KeyTip.KeyTipKeys="{Binding KeyTip.Tip}"
                     Classes="quickAccessButton"
                     Command="{Binding Command}"
+					Flyout="{Binding Flyout}"
                     CommandParameter="{Binding CommandParameter}"
                     DataContext="{Binding}"
                     Focusable="False"
                     Icon="{Binding QuickAccessIcon}"
-                    ItemsSource="{Binding ItemsSource}"
-                    MaxSize="Small"
-                    MinSize="Small"
-                    Size="Small"
-                    ToolTip.Tip="{Binding ToolTip.Tip}" />
+                    ToolTip.Tip="{Binding ToolTip.Tip}">
+				</local:SplitButtonControl>
 			</ControlTemplate>
 		</Setter>
 		<Style Selector="^:flyout-open /template/ Button">
@@ -157,7 +158,7 @@
 
 					<Button x:Name="PART_SecondaryButton"
 							Grid.Column="1"
-							MinWidth="{DynamicResource SplitButtonSecondaryButtonSize}"
+							Width="20"
 							BorderBrush="{TemplateBinding BorderBrush}"
 							Foreground="{TemplateBinding Foreground}"
 							Background="{TemplateBinding Background}"
@@ -170,7 +171,7 @@
 							VerticalAlignment="Stretch"
 							Focusable="False"
 							KeyboardNavigation.IsTabStop="False">
-						<PathIcon Height="10" Width="10"
+						<PathIcon Height="10" Width="10" Foreground="{TemplateBinding Foreground}"
 								  Data="M1939 486L2029 576L1024 1581L19 576L109 486L1024 1401L1939 486Z" />
 					</Button>
 				</Grid>
@@ -178,19 +179,17 @@
 		</Setter>
 		<Setter Property="QuickAccessTemplate">
 			<ControlTemplate>
-				<local:RibbonSplitButton
-                    Height="34"
+				<local:SplitButtonControl
+					VerticalAlignment="Stretch"
+					Theme="{DynamicResource SmallSplitButton}"
                     local:KeyTip.KeyTipKeys="{Binding KeyTip.Tip}"
                     Classes="quickAccessButton"
+					Flyout="{Binding Flyout}"
                     Command="{Binding Command}"
                     CommandParameter="{Binding CommandParameter}"
                     DataContext="{Binding}"
                     Focusable="False"
                     Icon="{Binding QuickAccessIcon}"
-                    ItemsSource="{Binding ItemsSource}"
-                    MaxSize="Small"
-                    MinSize="Small"
-                    Size="Small"
                     ToolTip.Tip="{Binding ToolTip.Tip}" />
 			</ControlTemplate>
 		</Setter>
@@ -241,10 +240,10 @@
 							FontSize="{TemplateBinding FontSize}"
 							Padding="{TemplateBinding Padding}"
 							FontWeight="{TemplateBinding FontWeight}"
-							 HorizontalAlignment="Stretch"
+							HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
-							VerticalAlignment="Top"
+							VerticalAlignment="Stretch"
                             BorderThickness="0"
 						Focusable="False"
 						KeyboardNavigation.IsTabStop="False">
@@ -257,7 +256,7 @@
 
 					<Button x:Name="PART_SecondaryButton"
 							Grid.Column="1"
-							MinWidth="{DynamicResource SplitButtonSecondaryButtonSize}"
+							Width="20"
 							BorderBrush="{TemplateBinding BorderBrush}"
 							Foreground="{TemplateBinding Foreground}"
 							Background="{TemplateBinding Background}"
@@ -270,7 +269,7 @@
 							VerticalAlignment="Stretch"
 							Focusable="False"
 							KeyboardNavigation.IsTabStop="False">
-						<PathIcon Height="10" Width="10"
+						<PathIcon Height="10" Width="10" Foreground="{TemplateBinding Foreground}"
 								  Data="M1939 486L2029 576L1024 1581L19 576L109 486L1024 1401L1939 486Z" />
 					</Button>
 				</Grid>
@@ -278,20 +277,18 @@
 		</Setter>
 		<Setter Property="QuickAccessTemplate">
 			<ControlTemplate>
-				<local:RibbonSplitButton
-                    Height="34"
+				<local:SplitButtonControl
+                    Theme="{DynamicResource SmallSplitButton}"
                     local:KeyTip.KeyTipKeys="{Binding KeyTip.Tip}"
                     Classes="quickAccessButton"
+					VerticalAlignment="Stretch"
                     Command="{Binding Command}"
                     CommandParameter="{Binding CommandParameter}"
                     DataContext="{Binding}"
-                    Focusable="False"
                     Icon="{Binding QuickAccessIcon}"
-                    ItemsSource="{Binding ItemsSource}"
-                    MaxSize="Small"
-                    MinSize="Small"
-                    Size="Small"
-                    ToolTip.Tip="{Binding ToolTip.Tip}" />
+					Flyout="{TemplateBinding Flyout}"
+                    ToolTip.Tip="{Binding ToolTip.Tip}">
+				</local:SplitButtonControl>
 			</ControlTemplate>
 		</Setter>
 		<Style Selector="^:flyout-open /template/ Button">

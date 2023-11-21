@@ -2,7 +2,10 @@
     x:Class="AvaloniaUI.Ribbon.Samples.Views.MainWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:AvaloniaUI.Ribbon.Sample.Converters;assembly=AvaloniaUI.Ribbon.Sample"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enums="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
+    xmlns:extensions="clr-namespace:AvaloniaUI.Ribbon.Sample.Extensions;assembly=AvaloniaUI.Ribbon.Sample"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ribbon="clr-namespace:AvaloniaUI.Ribbon;assembly=AvaloniaUI.Ribbon"
     xmlns:vm="clr-namespace:AvaloniaUI.Ribbon.Samples.ViewModels;assembly=AvaloniaUI.Ribbon.Sample"
@@ -13,11 +16,11 @@
     Height="720"
     MinWidth="500"
     MinHeight="500"
-    BorderBrush="{DynamicResource FillBrush}"
     Icon="/Assets/avalonia-logo.ico"
-    TitleBarForeground="White"
     mc:Ignorable="d">
 	<windows:RibbonWindow.Resources>
+		<converters:EnumDescriptionConverter x:Key="enumConverter" />
+
 		<ControlTemplate x:Key="Icon1">
 			<!--Rectangle Fill="{Binding $parent[TemplatedControl].Foreground}" Width="16" Height="16">
         <Rectangle.OpacityMask>
@@ -328,7 +331,7 @@
 		<VisualBrush
             AlignmentX="Left"
             AlignmentY="Top"
-            Stretch="None">
+            Stretch="UniformToFill">
 			<VisualBrush.Visual>
 				<Panel
                     Width="{Binding #MainWindow.Bounds.Width}"
@@ -408,6 +411,16 @@
 	<windows:RibbonWindow.DataContext>
 		<vm:MainWindowViewModel />
 	</windows:RibbonWindow.DataContext>
+	<windows:RibbonWindow.QuickAccessToolbar>
+		<windows:QuickAccessToolbar>
+			<windows:QuickAccessToolbar.RecommendedItems>
+				<windows:QuickAccessRecommendation Item="{Binding #RibbonSplitButton1}" />
+				<windows:QuickAccessRecommendation Item="{Binding #RibbonSplitButton2}" />
+				<windows:QuickAccessRecommendation Item="{Binding #RibbonSplitButton3}" />
+			</windows:QuickAccessToolbar.RecommendedItems>
+			<!--  windows:QuickAccessItem Item="{Binding #RibbonButton1}" /  -->
+		</windows:QuickAccessToolbar>
+	</windows:RibbonWindow.QuickAccessToolbar>
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition />
@@ -518,6 +531,160 @@
 				</ribbon:RibbonMenu>
 			</windows:DesktopRibbon.Menu>
 			<windows:DesktopRibbon.Tabs>
+				<ribbon:RibbonTab ribbon:KeyTip.KeyTipKeys="B" Header="Button Controls">
+					<ribbon:RibbonTab.Groups>
+						<ribbon:RibbonGroupBox
+                            ribbon:KeyTip.KeyTipKeys="S"
+                            Command="{Binding OnClickCommand}"
+                            Header="SplitButtonControls">
+							<ribbon:SplitButtonControl
+                                x:Name="RibbonSplitButton1"
+                                Content="Large"
+                                Icon="{DynamicResource Icon1}"
+                                LargeIcon="{DynamicResource Icon1Large}"
+                                QuickAccessIcon="{DynamicResource Icon1QuickAccess}"
+                                Size="Large"
+                                Theme="{StaticResource LargeSplitButton}">
+								<ribbon:SplitButtonControl.Flyout>
+									<MenuFlyout Placement="Bottom">
+										<MenuItem Header="Item 1">
+											<MenuItem Header="Subitem 1" />
+											<MenuItem Header="Subitem 2" />
+											<MenuItem Header="Subitem 3" />
+										</MenuItem>
+										<MenuItem Header="Item 2" InputGesture="Ctrl+A" />
+										<MenuItem Header="Item 3" />
+									</MenuFlyout>
+								</ribbon:SplitButtonControl.Flyout>
+							</ribbon:SplitButtonControl>
+							<ribbon:SplitButtonControl
+                                x:Name="RibbonSplitButton2"
+                                Content="Medium"
+                                Icon="{DynamicResource Icon2}"
+                                LargeIcon="{DynamicResource Icon2Large}"
+                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}"
+                                Theme="{StaticResource MediumSplitButton}" />
+							<ribbon:SplitButtonControl
+                                x:Name="RibbonSplitButton3"
+                                Icon="{DynamicResource Icon2}"
+                                LargeIcon="{DynamicResource Icon2Large}"
+                                MaxSize="Small"
+                                MinSize="Small"
+                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}"
+                                Theme="{StaticResource SmallSplitButton}"
+                                ToolTip.Tip="Small" />
+						</ribbon:RibbonGroupBox>
+
+						<ribbon:RibbonGroupBox
+                            ribbon:KeyTip.KeyTipKeys="B"
+                            Command="{Binding OnClickCommand}"
+                            Header="RibbonButtons">
+							<ribbon:RibbonButton
+                                Content="Large"
+                                Icon="{DynamicResource Icon1}"
+                                LargeIcon="{DynamicResource Icon1Large}"
+                                MaxSize="Large"
+                                MinSize="Large"
+                                QuickAccessIcon="{DynamicResource Icon1QuickAccess}" />
+							<ribbon:RibbonButton
+                                Content="Medium"
+                                Icon="{DynamicResource Icon2}"
+                                LargeIcon="{DynamicResource Icon2Large}"
+                                MaxSize="Medium"
+                                MinSize="Medium"
+                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}" />
+							<ribbon:RibbonButton
+                                Icon="{DynamicResource Icon2}"
+                                LargeIcon="{DynamicResource Icon2Large}"
+                                MaxSize="Small"
+                                MinSize="Small"
+                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}"
+                                ToolTip.Tip="Small" />
+						</ribbon:RibbonGroupBox>
+						<ribbon:RibbonGroupBox
+                            ribbon:KeyTip.KeyTipKeys="T"
+                            Command="{Binding OnClickCommand}"
+                            Header="RibbonToggleButtons">
+							<ribbon:RibbonToggleButton
+                                Content="Large"
+                                Icon="{DynamicResource Icon1}"
+                                LargeIcon="{DynamicResource Icon1Large}"
+                                MaxSize="Large"
+                                MinSize="Large"
+                                QuickAccessIcon="{DynamicResource Icon1QuickAccess}" />
+							<ribbon:RibbonToggleButton
+                                Content="Medium"
+                                Icon="{DynamicResource Icon2}"
+                                LargeIcon="{DynamicResource Icon2Large}"
+                                MaxSize="Medium"
+                                MinSize="Medium"
+                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}" />
+							<ribbon:RibbonToggleButton
+                                Icon="{DynamicResource Icon2}"
+                                LargeIcon="{DynamicResource Icon2Large}"
+                                MaxSize="Small"
+                                MinSize="Small"
+                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}"
+                                ToolTip.Tip="Small" />
+						</ribbon:RibbonGroupBox>
+						<ribbon:RibbonGroupBox
+                            ribbon:KeyTip.KeyTipKeys="S"
+                            Command="{Binding OnClickCommand}"
+                            Header="RibbonDropDownButtons">
+							<ribbon:RibbonDropDownButton
+                                x:Name="LargeRibbonDropDownButton"
+                                Content="Large"
+                                Icon="{DynamicResource Icon1}"
+                                LargeIcon="{DynamicResource Icon1Large}"
+                                MaxSize="Large"
+                                MinSize="Large"
+                                QuickAccessIcon="{DynamicResource Icon1QuickAccess}">
+								<ribbon:RibbonDropDownItem
+                                    Command="{Binding OnClickCommand}"
+                                    CommandParameter="RibbonDropDownButton Item 1"
+                                    Text="Item 1">
+									<ribbon:RibbonDropDownItem.Icon>
+										<ControlTemplate>
+											<Rectangle
+                                                Width="16"
+                                                Height="16"
+                                                Fill="Red" />
+										</ControlTemplate>
+									</ribbon:RibbonDropDownItem.Icon>
+								</ribbon:RibbonDropDownItem>
+								<ribbon:RibbonDropDownItem
+                                    Command="{Binding OnClickCommand}"
+                                    CommandParameter="RibbonDropDownButton Item 2"
+                                    Text="Item 2">
+									<ribbon:RibbonDropDownItem.Icon>
+										<ControlTemplate>
+											<Rectangle
+                                                Width="16"
+                                                Height="16"
+                                                Fill="Green" />
+										</ControlTemplate>
+									</ribbon:RibbonDropDownItem.Icon>
+								</ribbon:RibbonDropDownItem>
+							</ribbon:RibbonDropDownButton>
+							<ribbon:RibbonDropDownButton
+                                Content="Medium"
+                                Icon="{DynamicResource Icon2}"
+                                ItemsSource="{Binding #LargeRibbonDropDownButton.Items}"
+                                LargeIcon="{DynamicResource Icon2Large}"
+                                MaxSize="Medium"
+                                MinSize="Medium"
+                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}" />
+							<ribbon:RibbonDropDownButton
+                                Icon="{DynamicResource Icon2}"
+                                ItemsSource="{Binding #LargeRibbonDropDownButton.Items}"
+                                LargeIcon="{DynamicResource Icon2Large}"
+                                MaxSize="Small"
+                                MinSize="Small"
+                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}"
+                                ToolTip.Tip="Small" />
+						</ribbon:RibbonGroupBox>
+					</ribbon:RibbonTab.Groups>
+				</ribbon:RibbonTab>
 				<ribbon:RibbonTab ribbon:KeyTip.KeyTipKeys="H" Header="Home">
 					<ribbon:RibbonTab.Groups>
 						<ribbon:RibbonGroupBox
@@ -711,155 +878,6 @@
 						</ribbon:RibbonGroupBox>
 					</ribbon:RibbonTab.Groups>
 				</ribbon:RibbonTab>
-				<ribbon:RibbonTab ribbon:KeyTip.KeyTipKeys="B" Header="Button Controls">
-					<ribbon:RibbonTab.Groups>
-						<ribbon:RibbonGroupBox
-                            ribbon:KeyTip.KeyTipKeys="B"
-                            Command="{Binding OnClickCommand}"
-                            Header="RibbonButtons">
-							<ribbon:RibbonButton
-                                Content="Large"
-                                Icon="{DynamicResource Icon1}"
-                                LargeIcon="{DynamicResource Icon1Large}"
-                                MaxSize="Large"
-                                MinSize="Large"
-                                QuickAccessIcon="{DynamicResource Icon1QuickAccess}" />
-							<ribbon:RibbonButton
-                                Content="Medium"
-                                Icon="{DynamicResource Icon2}"
-                                LargeIcon="{DynamicResource Icon2Large}"
-                                MaxSize="Medium"
-                                MinSize="Medium"
-                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}" />
-							<ribbon:RibbonButton
-                                Icon="{DynamicResource Icon2}"
-                                LargeIcon="{DynamicResource Icon2Large}"
-                                MaxSize="Small"
-                                MinSize="Small"
-                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}"
-                                ToolTip.Tip="Small" />
-						</ribbon:RibbonGroupBox>
-						<ribbon:RibbonGroupBox
-                            ribbon:KeyTip.KeyTipKeys="T"
-                            Command="{Binding OnClickCommand}"
-                            Header="RibbonToggleButtons">
-							<ribbon:RibbonToggleButton
-                                Content="Large"
-                                Icon="{DynamicResource Icon1}"
-                                LargeIcon="{DynamicResource Icon1Large}"
-                                MaxSize="Large"
-                                MinSize="Large"
-                                QuickAccessIcon="{DynamicResource Icon1QuickAccess}" />
-							<ribbon:RibbonToggleButton
-                                Content="Medium"
-                                Icon="{DynamicResource Icon2}"
-                                LargeIcon="{DynamicResource Icon2Large}"
-                                MaxSize="Medium"
-                                MinSize="Medium"
-                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}" />
-							<ribbon:RibbonToggleButton
-                                Icon="{DynamicResource Icon2}"
-                                LargeIcon="{DynamicResource Icon2Large}"
-                                MaxSize="Small"
-                                MinSize="Small"
-                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}"
-                                ToolTip.Tip="Small" />
-						</ribbon:RibbonGroupBox>
-						<ribbon:RibbonGroupBox
-                            ribbon:KeyTip.KeyTipKeys="S"
-                            Command="{Binding OnClickCommand}"
-                            Header="RibbonDropDownButtons">
-							<ribbon:RibbonDropDownButton
-                                x:Name="LargeRibbonDropDownButton"
-                                Content="Large"
-                                Icon="{DynamicResource Icon1}"
-                                LargeIcon="{DynamicResource Icon1Large}"
-                                MaxSize="Large"
-                                MinSize="Large"
-                                QuickAccessIcon="{DynamicResource Icon1QuickAccess}">
-								<ribbon:RibbonDropDownItem
-                                    Command="{Binding OnClickCommand}"
-                                    CommandParameter="RibbonDropDownButton Item 1"
-                                    Text="Item 1">
-									<ribbon:RibbonDropDownItem.Icon>
-										<ControlTemplate>
-											<Rectangle
-                                                Width="16"
-                                                Height="16"
-                                                Fill="Red" />
-										</ControlTemplate>
-									</ribbon:RibbonDropDownItem.Icon>
-								</ribbon:RibbonDropDownItem>
-								<ribbon:RibbonDropDownItem
-                                    Command="{Binding OnClickCommand}"
-                                    CommandParameter="RibbonDropDownButton Item 2"
-                                    Text="Item 2">
-									<ribbon:RibbonDropDownItem.Icon>
-										<ControlTemplate>
-											<Rectangle
-                                                Width="16"
-                                                Height="16"
-                                                Fill="Green" />
-										</ControlTemplate>
-									</ribbon:RibbonDropDownItem.Icon>
-								</ribbon:RibbonDropDownItem>
-							</ribbon:RibbonDropDownButton>
-							<ribbon:RibbonDropDownButton
-                                Content="Medium"
-                                Icon="{DynamicResource Icon2}"
-                                ItemsSource="{Binding #LargeRibbonDropDownButton.Items}"
-                                LargeIcon="{DynamicResource Icon2Large}"
-                                MaxSize="Medium"
-                                MinSize="Medium"
-                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}" />
-							<ribbon:RibbonDropDownButton
-                                Icon="{DynamicResource Icon2}"
-                                ItemsSource="{Binding #LargeRibbonDropDownButton.Items}"
-                                LargeIcon="{DynamicResource Icon2Large}"
-                                MaxSize="Small"
-                                MinSize="Small"
-                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}"
-                                ToolTip.Tip="Small" />
-						</ribbon:RibbonGroupBox>
-						<ribbon:RibbonGroupBox
-                            ribbon:KeyTip.KeyTipKeys="S"
-                            Command="{Binding OnClickCommand}"
-                            Header="SplitButtonControls">
-							<ribbon:SplitButtonControl
-                                Content="Large"
-                                Icon="{DynamicResource Icon1}"
-                                LargeIcon="{DynamicResource Icon1Large}"
-                                QuickAccessIcon="{DynamicResource Icon1QuickAccess}"
-                                Theme="{StaticResource LargeSplitButton}">
-								<ribbon:SplitButtonControl.Flyout>
-									<MenuFlyout Placement="Bottom">
-										<MenuItem Header="Item 1">
-											<MenuItem Header="Subitem 1" />
-											<MenuItem Header="Subitem 2" />
-											<MenuItem Header="Subitem 3" />
-										</MenuItem>
-										<MenuItem Header="Item 2" InputGesture="Ctrl+A" />
-										<MenuItem Header="Item 3" />
-									</MenuFlyout>
-								</ribbon:SplitButtonControl.Flyout>
-							</ribbon:SplitButtonControl>
-							<ribbon:SplitButtonControl
-                                Content="Medium"
-                                Icon="{DynamicResource Icon2}"
-                                LargeIcon="{DynamicResource Icon2Large}"
-                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}"
-                                Theme="{StaticResource MediumSplitButton}" />
-							<ribbon:SplitButtonControl
-                                Icon="{DynamicResource Icon2}"
-                                LargeIcon="{DynamicResource Icon2Large}"
-                                MaxSize="Small"
-                                MinSize="Small"
-                                QuickAccessIcon="{DynamicResource Icon2QuickAccess}"
-                                Theme="{StaticResource SmallSplitButton}"
-                                ToolTip.Tip="Small" />
-						</ribbon:RibbonGroupBox>
-					</ribbon:RibbonTab.Groups>
-				</ribbon:RibbonTab>
 
 				<ribbon:RibbonTab ribbon:KeyTip.KeyTipKeys="G" Header="Galleries">
 					<ribbon:RibbonTab.Groups>
@@ -991,7 +1009,7 @@
 							</ribbon:Gallery>
 						</ribbon:RibbonGroupBox>
 						<ribbon:RibbonGroupBox ribbon:KeyTip.KeyTipKeys="M" Header="Medium gallery">
-							<ribbon:Gallery MaxSize="Medium" Size="Medium">
+							<ribbon:Gallery Theme="{StaticResource MediumGallery}">
 								<ribbon:GalleryItem Content="Item 1">
 									<ribbon:GalleryItem.Icon>
 										<ControlTemplate>
@@ -1115,7 +1133,7 @@
 							</ribbon:Gallery>
 						</ribbon:RibbonGroupBox>
 						<ribbon:RibbonGroupBox ribbon:KeyTip.KeyTipKeys="S" Header="Small gallery">
-							<ribbon:Gallery MaxSize="Small" Size="Small">
+							<ribbon:Gallery Theme="{StaticResource SmallGallery}">
 								<ribbon:GalleryItem Content="Item 1">
 									<ribbon:GalleryItem.Icon>
 										<ControlTemplate>
@@ -1570,6 +1588,7 @@
 				</ribbon:RibbonContextualTabGroup>
 			</windows:DesktopRibbon.Tabs>
 		</windows:DesktopRibbon>
+
 		<StackPanel
             Grid.Row="1"
             Margin="25"
@@ -1591,7 +1610,18 @@
 				<TextBlock Text="LAST ACTION: " />
 				<TextBlock Text="{Binding LastActionText}" />
 			</StackPanel>
-			<CheckBox Content="Use System Decorations" IsChecked="{Binding SystemDecorations, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Mode=TwoWay}" />
+			<StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+				<TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Text="System Decorations Mode : " />
+				<ComboBox
+                    Width="200"
+                    DisplayMemberBinding="{Binding Value}"
+                    ItemsSource="{Binding Source={extensions:Enumeration {x:Type enums:SystemDecorations}}}"
+                    SelectedValue="{Binding SystemDecorations, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=RibbonWindow}, Mode=TwoWay}"
+                    SelectedValueBinding="{Binding Value}" />
+			</StackPanel>
 			<!--  CheckBox x:Name="LightsOnCheckBox" Content="Lights" IsChecked="True"/  -->
 			<CheckBox Content="Show Contextual tab group 1" IsChecked="{Binding ShowContextualGroup1, Mode=OneWay}" />
 			<CheckBox Content="Show Contextual tab group 2" IsChecked="{Binding ShowContextualGroup2}" />

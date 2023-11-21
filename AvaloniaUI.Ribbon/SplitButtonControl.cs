@@ -2,12 +2,15 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Markup.Xaml.MarkupExtensions;
+using Avalonia.Styling;
 
 using AvaloniaUI.Ribbon.Contracts;
 using AvaloniaUI.Ribbon.Helpers;
 using AvaloniaUI.Ribbon.Models;
 
 using System;
+using System.Linq;
 
 namespace AvaloniaUI.Ribbon
 {
@@ -69,7 +72,26 @@ namespace AvaloniaUI.Ribbon
         public RibbonControlSize Size
         {
             get => (RibbonControlSize)GetValue(SizeProperty);
-            set => SetValue(SizeProperty, value);
+            set
+            {
+                SetValue(SizeProperty, value);
+
+                switch (value)
+                {
+                    case RibbonControlSize.Large:
+                        //TODO: Figure out a way to optimize this.
+                        Application.Current.Resources.TryGetResource("LargeSplitButton", null, out var theme);
+                        if (theme as ControlTheme != null)
+                            Theme = theme as ControlTheme;
+                        break;
+
+                    case RibbonControlSize.Small:
+                        break;
+
+                    case RibbonControlSize.Medium:
+                        break;
+                }
+            }
         }
 
         //protected override Type StyleKeyOverride => typeof(SplitButton);

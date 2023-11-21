@@ -4,9 +4,11 @@
     xmlns:col="clr-namespace:System.Collections"
     xmlns:local="clr-namespace:AvaloniaUI.Ribbon.Windows;assembly=AvaloniaUI.Ribbon.Windows"
     xmlns:sys="clr-namespace:System;assembly=netstandard"
+	x:DataType="local:QuickAccessToolbar"
     xmlns:windows="clr-namespace:AvaloniaUI.Ribbon.Windows;assembly=AvaloniaUI.Ribbon.Windows">
 	<Style Selector="local|QuickAccessToolbar">
-		<Setter Property="Height" Value="34" />
+		<Setter Property="Height" Value="30" />
+		<Setter Property="VerticalAlignment" Value="Center" />
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="Template">
 			<ControlTemplate>
@@ -92,7 +94,7 @@
                                 StrokeThickness="1" />
 						</StackPanel>
 					</ToggleButton>
-					<ItemsControl ItemsSource="{TemplateBinding ItemsSource}">
+					<ItemsControl VerticalAlignment="Stretch" ItemsSource="{TemplateBinding ItemsSource}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<StackPanel Orientation="Horizontal" />
@@ -117,13 +119,27 @@
 	<Style Selector="local|QuickAccessItem">
 		<Setter Property="Template">
 			<ControlTemplate>
-				<TemplatedControl DataContext="{TemplateBinding Item}" Template="{Binding Item.QuickAccessTemplate, RelativeSource={RelativeSource Mode=TemplatedParent}}">
-					<TemplatedControl.ContextMenu>
-						<ContextMenu>
-							<MenuItem x:Name="PART_RemoveFromQuickAccessToolbar" Header="Remove from quick access toolbar" />
-						</ContextMenu>
-					</TemplatedControl.ContextMenu>
-				</TemplatedControl>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<TemplatedControl Grid.Column="0" Foreground="{Binding $parent[local:RibbonWindow].TitleBarForeground}" DataContext="{TemplateBinding Item}" Template="{Binding Item.QuickAccessTemplate, RelativeSource={RelativeSource Mode=TemplatedParent}}">
+						<TemplatedControl.ContextMenu>
+							<ContextMenu>
+								<MenuItem x:Name="PART_RemoveFromQuickAccessToolbar" Header="Remove from quick access toolbar" />
+							</ContextMenu>
+						</TemplatedControl.ContextMenu>
+					</TemplatedControl>
+					<Border Padding="0"
+							Width="1"
+							Margin="2"
+							Height="20" Grid.Column="1"
+							HorizontalAlignment="Center"
+							BorderBrush="{Binding $parent[local:RibbonWindow].TitleBarForeground}" Opacity="0.5"
+							  BorderThickness="1"
+							  Background="Transparent" />
+				</Grid>
 			</ControlTemplate>
 		</Setter>
 	</Style>

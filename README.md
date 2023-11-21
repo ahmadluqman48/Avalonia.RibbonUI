@@ -22,28 +22,28 @@ Based on the platform availability the components are summarized as follows.
 
 ### Cross-Platform
 
-|   Control Type   | Original             | Status            | New Component (Under 'Controls' Path) |
-|:----------------:|----------------------|-------------------|---------------------------------------|
-| Ribbon           | Ribbon               | Original State    |                                       |
-| Button           | RibbonButton         | Original State    |                                       |
-| Toggle Button    | RibbonToggleButton   | Original State    |                                       |
-| Split Button     | RibbonSplitButton    | Recreated         | SplitButtonControl (Will be renamed)  |
-| Gallery          | RibbonGallery        | Under development | RibbonGallery                         |
-| GalleryItem      | GalleryItem          | Under Development | GalleryItem                           |
-| Drop Down Button | RibbonDropDownButton | Original State    |                                       |
-| File Menu        | RibbonMenu           | Original State    |                                       |
-| File Menu Item   | RibbonMenuItem       | Original State    |                                       |
-| Tab              | RibbonTab            | Original State    |                                       |
-| Ribbon Group Box | RibbonGroupBox       | Original State    |                                       |
+|   Control Type   | Original             | Status               | New Component (Under 'Controls' Path) |
+|:----------------:|----------------------|----------------------|---------------------------------------|
+| Ribbon           | Ribbon               | Original State       |                                       |
+| Button           | RibbonButton         |:construction: Under Reconstruction |                                       |
+| Toggle Button    | RibbonToggleButton   | Original State       |                                       |
+| Split Button     | RibbonSplitButton    | Recreated            | SplitButtonControl (Will be renamed)  |
+| Gallery          | RibbonGallery        |:construction: Under development    | RibbonGallery                         |
+| GalleryItem      | GalleryItem          |:construction: Under Development    | GalleryItem                           |
+| Drop Down Button | RibbonDropDownButton | Original State       |                                       |
+| File Menu        | RibbonMenu           | Original State       |                                       |
+| File Menu Item   | RibbonMenuItem       | Original State       |                                       |
+| Tab              | RibbonTab            | Original State       |                                       |
+| Ribbon Group Box | RibbonGroupBox       | Original State       |                                       |
 
 ### Desktop Only
 
 Apart from the above-mentioned global components, the desktop-specific controls are presented below.
 
-|   Control Type   | Original             | Status            | New Component (Under 'Controls' Path) |
-|:----------------:|----------------------|-------------------|---------------------------------------|
-| Ribbon Window    | RibbonWindow         | Original State    |                                       |
-| Quick Access Bar | QuickAccessToolBar   | Original State    |                                       |
+|   Control Type   | Original             | Status               | New Component (Under 'Controls' Path) |
+|:----------------:|----------------------|----------------------|---------------------------------------|
+| Ribbon Window    | RibbonWindow         |:construction: Under Reconstruction |                                       |
+| Quick Access Bar | QuickAccessToolBar   |:construction: Under Reconstruction |                                       |
 
 
 ## Previews: Desktop

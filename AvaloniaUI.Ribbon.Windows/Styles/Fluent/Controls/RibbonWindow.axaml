@@ -3,9 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:col="clr-namespace:System.Collections"
     xmlns:local="clr-namespace:AvaloniaUI.Ribbon.Windows;assembly=AvaloniaUI.Ribbon.Windows"
+    xmlns:converters="clr-namespace:AvaloniaUI.Ribbon.Windows.Converters;assembly=AvaloniaUI.Ribbon.Windows"
     xmlns:windows="clr-namespace:AvaloniaUI.Ribbon.Windows;assembly=AvaloniaUI.Ribbon.Windows">
 	<Styles.Resources>
-		<local:WindowIconToImageConverter x:Key="WindowIconToImageConverter" />
+		<converters:WindowIconToImageConverter x:Key="WindowIconToImageConverter" />
 		<!--local:DoubleBindingsToPointConverter x:Key="DoubleBindingsToPointConverter" />
     <local:DoubleArithmeticConverter x:Key="DoubleArithmeticConverter"/-->
 	</Styles.Resources>
@@ -32,14 +33,15 @@
 						<VisualLayerManager.ChromeOverlayLayer />
 						<DockPanel>
 							<Grid DockPanel.Dock="Top">
-								<TitleBar
+								<TitleBar DockPanel.Dock="Left"
                                     x:Name="PART_TitleBar"
                                     Background="{TemplateBinding TitleBarBackground}"
                                     Foreground="{TemplateBinding TitleBarForeground}" />
 								<ContentPresenter
                                     x:Name="PART_QuickAccessToolbarPresenter"
+									Margin="30,0,0,0"
                                     HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
+                                    VerticalAlignment="Stretch"
                                     Content="{TemplateBinding QuickAccessToolbar}" />
 							</Grid>
 							<Grid RowDefinitions="Auto, Auto, Auto">
@@ -75,18 +77,17 @@
 						<Panel
                             x:Name="PART_PictureBar"
                             VerticalAlignment="Center"
-                            Background="#01000000">
+                            Background="Transparent">
 							<Image
-                                Grid.Row="0"
-                                Grid.ColumnSpan="2"
                                 MaxWidth="16"
                                 MaxHeight="16"
                                 Margin="9,0"
+								RenderOptions.BitmapInterpolationMode="HighQuality"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Classes="IconImage"
                                 IsHitTestVisible="False"
-                                Source="{Binding Icon, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WindowIconToImageConverter}}" />
+                                Source="{Binding Icon, RelativeSource={RelativeSource AncestorType=local:RibbonWindow}, Converter={StaticResource WindowIconToImageConverter}}" />
 						</Panel>
 						<Border
                             x:Name="PART_Background"
@@ -96,7 +97,7 @@
 						<CaptionButtons
                             x:Name="PART_CaptionButtons"
                             HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
+                            VerticalAlignment="Stretch"
                             Foreground="{TemplateBinding Foreground}" />
 					</Panel>
 				</Panel>
@@ -199,10 +200,12 @@
 	<Style Selector="windows|RibbonWindow[SystemDecorations=Full] /template/ Image#IconImage">
 		<Setter Property="IsVisible" Value="False" />
 	</Style>
+
 	<Style Selector="windows|RibbonWindow[SystemDecorations=Full] /template/ Panel#PART_TitleBar">
 		<Setter Property="IsVisible" Value="False" />
 		<Setter Property="Height" Value="0" />
 	</Style>
+
 	<Style Selector="windows|RibbonWindow[SystemDecorations=None] /template/ Panel#PART_TitleBar">
 		<Setter Property="Height" Value="33" />
 	</Style>

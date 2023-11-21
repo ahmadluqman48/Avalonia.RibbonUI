@@ -1,4 +1,9 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia;
+using Avalonia.Controls;
+
+using AvaloniaUI.Ribbon.Sample.Models.Enums;
+
+using CommunityToolkit.Mvvm.ComponentModel;
 
 using System;
 
@@ -8,20 +13,29 @@ namespace AvaloniaUI.Ribbon.Samples.ViewModels
     {
         [ObservableProperty]
         private string _help = "Help requested!";
+
         [ObservableProperty]
         private string _lastActionText = "none";
+
         [ObservableProperty]
         private bool _showContextualGroup1 = true;
+
         [ObservableProperty]
         private bool _showContextualGroup2 = false;
+
         [ObservableProperty]
         private bool _showContextualGroup3 = false;
 
         [ObservableProperty]
         private bool _switchTheme;
 
+        [ObservableProperty]
+        private SystemDecorations _selectedDecoration;
 
-      
+        public MainWindowViewModel()
+        {
+        }
+
         public void HelpCommand(object parameter)
         {
             Console.WriteLine(Help);
@@ -55,10 +69,10 @@ namespace AvaloniaUI.Ribbon.Samples.ViewModels
                 case true:
                     App.ThemeManager.Switch(0);
                     break;
-                    case false:
+
+                case false:
                     App.ThemeManager.Switch(1);
                     break;
-
             }
         }
     }
